@@ -1,0 +1,19 @@
+import Env;
+
+from "openweathermap.du" import Config, Current;
+
+{ // main
+    const token = Env.get("OWM_TOKEN");
+    if (not token) {
+        print("error: OWM_TOKEN required to be set in the environment");
+        System.exit(1);
+    }
+
+    const location = "Phoenix";
+
+    const config = Config("F", "en", token);
+    const current = Current(config);
+    const res = current.current(location);
+
+    print("Current Weather Data for: {} \n\n{}\n".format(location, res));
+}

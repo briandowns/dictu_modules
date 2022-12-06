@@ -1,0 +1,20 @@
+import HTTP;
+import System;
+
+{ // main
+    const opts = {
+            "timeout": 20,
+            "headers": [
+                "User-Agent: Dictu-OWM-Client"
+            ],
+            "insecure": true
+        };
+        
+    const client = HTTP.newClient(opts);
+    const res = client.get("https://curl.se/download/curl-7.86.0.zip");
+    print(res.unwrap().content);
+    with("curl-7.86.0.zip", "w") {
+        file.write(res.unwrap().content);
+    }
+    System.exit(0);
+}

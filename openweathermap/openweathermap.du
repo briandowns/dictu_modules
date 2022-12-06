@@ -1,0 +1,321 @@
+// Module openweathermap is a library for use to access the
+// http://openweathermap.org API.  JSON is the only return 
+// format supported at this time.
+
+import HTTP;
+import JSON;
+import Path;
+import System;
+
+const baseURL        = "http://api.openweathermap.org/data/2.5/weather?";
+const onecallURL     = "https://api.openweathermap.org/data/2.5/onecall?%s";
+const iconURL        = "https://openweathermap.org/img/w/{}";
+const groupURL       = "http://api.openweathermap.org/data/2.5/group?%s";
+const stationURL     = "https://api.openweathermap.org/data/2.5/station?id=%d";
+const forecast5Base  = "https://api.openweathermap.org/data/2.5/forecast?appid=%s&%s&mode=json&units=%s&lang=%s&cnt=%d";
+const forecast16Base = "https://api.openweathermap.org/data/2.5/forecast/daily?appid=%s&%s&mode=json&units=%s&lang=%s&cnt=%d";
+const historyURL     = "https://api.openweathermap.org/data/2.5/history/%s";
+const pollutionURL   = "https://api.openweathermap.org/data/2.5/air_pollution?appid=%s&lat=%s&lon=%s";
+const uvURL          = "https://api.openweathermap.org/data/2.5/";
+const dataPostURL    = "https://openweathermap.org/data/post";
+
+// langCodes holds all supported languages to be used
+// inspried and sourced from @bambocher (github.com/bambocher)
+const langCodes = {
+	"AF":    "Afrikaans",
+	"AL":    "Albanian",
+	"AR":    "Arabic",
+	"AZ":    "Azerbaijani",
+	"BG":    "Bulgarian",
+	"CA":    "Catalan",
+	"CZ":    "Czech",
+	"DA":    "Danish",
+	"DE":    "German",
+	"EL":    "Greek",
+	"EN":    "English",
+	"ES":    "Spanish",
+	"EU":    "Basque",
+	"FA":    "Persian (Farsi)",
+	"FI":    "Finnish",
+	"FR":    "French",
+	"GL":    "Galician",
+	"HE":    "Hebrew",
+	"HI":    "Hindi",
+	"HR":    "Croatian",
+	"HU":    "Hungarian",
+	"ID":    "Indonesian",
+	"IT":    "Italian",
+	"JA":    "Japanese",
+	"KR":    "Korean",
+	"LA":    "Latvian",
+	"LT":    "Lithuanian",
+	"MK":    "Macedonian",
+	"NL":    "Dutch",
+	"NO":    "Norwegian",
+	"PL":    "Polish",
+	"PT":    "Portuguese",
+	"PT_BR": "Português Brasil",
+	"RO":    "Romanian",
+	"RU":    "Russian",
+	"SE":    "Swedish",
+	"SK":    "Slovak",
+	"SL":    "Slovenian",
+	"SP":    "Spanish",
+	"SR":    "Serbian",
+	"SV":    "Swedish",
+	"TH":    "Thai",
+	"TR":    "Turkish",
+	"UA":    "Ukrainian",
+	"UK":    "Ukrainian",
+	"VI":    "Vietnamese",
+	"ZH_CN": "Chinese Simplified",
+	"ZH_TW": "Chinese Traditional",
+	"ZU":    "Zulu"
+};
+
+// validLangCode makes sure the string passed in is an
+// acceptable lang code.
+def validLangCode(code) {
+    var valid = false;
+
+    langCodes.forEach(def(_, v) => {
+        if (code == v) {
+            valid = true;
+        }
+    });
+
+    return valid;
+}
+
+// dataUnits represents the character chosen to represent the
+// temperature notation
+const dataUnits = {
+    "C": "metric",
+    "F": "imperial",
+    "K": "internal"
+};
+
+// validDataUnit makes sure the string passed in is an accepted
+// unit of measure to be used for the return data.
+def validDataUnit(unit) {
+    var valid = false;
+
+    dataUnits.forEach(def(k, _) => {
+        if (unit == k) {
+            valid = true;
+        }
+    });
+
+    return valid;
+}
+
+// validDataUnitSymbol makes sure the string passed in is an
+// acceptable data unit symbol.
+def validDataUnitSymbol(unit) {
+    var valid = false;
+
+    dataUnits.forEach(def(_, v) => {
+        if (unit == v) {
+            valid = true;
+        }
+    });
+
+    return valid;
+}
+
+// Slice of type string of the valid parameters to be sent from a station.
+// The API refers to this data as the "Weather station data transmission protocol"
+const stationDataParameters = {
+	"wind_dir",   // Wind direction
+	"wind_speed", // Wind speed
+	"wind_gust",  // Wind gust speed
+	"temp",       // Temperature
+	"humidity",   // Relative humidty
+	"pressure",   // Atmospheric pressure
+	"rain_1h",    // Rain in the last hour
+	"rain_24h",   // Rain in the last 24 hours
+	"rain_today", // Rain since midnight
+	"snow",       // Snow in the last 24 hours
+	"lum",        // Brightness
+	"lat",        // Latitude
+	"long",       // Longitude
+	"alt",        // Altitude
+	"radiation",  // Radiation
+	"dewpoint",   // Dew point
+	"uv",         // UV index
+	"name",       // Weather station name
+};
+
+// validateStationDataParameter will make sure that whatever parameter
+// supplied is one that can actually be used in the POST request.
+def validateStationDataParameter(param) {
+    var valid = false;
+
+    stationDataParameters.forEach(def(p) => {
+        if (p == param) {
+            valid = true;
+        }
+    });
+
+    return valid;
+}
+
+// RetrieveIcon will get the specified icon from the API.
+def retrieveIcon(path, iconFile) {
+    const fullPath = Path.join(path, iconFile);
+
+    if (Path.exists(fullPath)) {
+        return Success("");
+    }
+
+    const res = HTTP.get(iconURL.format(iconFile));
+    if (not res.success()) {
+        return res.unwrapError();
+    }
+
+    with(fullPath, "w") {
+        file.write(res.unwrap().content);
+    }
+
+    return Success("");
+}
+
+class Config {
+    private token;
+    private httpClient;
+    
+    init(units, lang, token) {
+        this.units = units;
+        this.lang = lang;
+        this.token = token;
+        this.httpClient = this.createHTTPClient();
+    }
+
+    private createHTTPClient() {
+        const opts = {
+            "timeout": 20,
+            "headers": [
+                "Content-Type: application/json", 
+                "Accept: application/json",
+                "User-Agent: Dictu-OWM-Client"
+            ],
+            "insecure": false
+        };
+        
+        return HTTP.newClient(opts);
+    }
+
+    getToken() {
+        return this.token;
+    }
+
+    getClient() {
+        return this.httpClient;
+    }
+}
+
+class Current {
+    private client;
+
+    init(client) {
+        this.client = client;
+    }
+
+    current(name) {
+        var url = baseURL;
+        url = url + "appid=" + this.client.getToken();
+        url = url + "&q=" + name;
+        url = url + "&units=" + this.client.units;
+        url = url + "&lang=" + this.client.lang;
+        
+        const res = this.client.getClient().get(url);
+        if (not res.success()) {
+            return res.unwrapError();
+        }
+
+        const data = JSON.parse(res.unwrap().content);
+        if (not data.success()) {
+            return res.unwrapError();
+        }
+
+        return data.unwrap();
+    }
+}
+
+class Forecast {
+    private client;
+
+    init(client) {
+        this.client = client;
+    }
+}
+
+class History {
+    private client;
+
+    init(client) {
+        this.client = client;
+    }
+}
+
+class OneCall {
+    private client;
+
+    init(client) {
+        this.client = client;
+    }
+}
+
+class Pollution {
+    private client;
+
+    init(client) {
+        this.client = client;
+    }
+}
+
+class UV {
+    private client;
+
+    init(client) {
+        this.client = client;
+    }
+
+    // func (u *UV) Current(coord *Coordinates) error {
+    // 	response, err := u.client.Get(fmt.Sprintf("%suvi?lat=%f&lon=%f&appid=%s", uvURL, coord.Latitude, coord.Longitude, u.Key))
+    // 	if err != nil {
+    // 		return err
+    // 	}
+
+    // 	defer response.Body.Close()
+
+    // 	if response.StatusCode == http.StatusUnauthorized {
+    // 		return errInvalidKey
+    // 	}
+
+    // 	if err = json.NewDecoder(response.Body).Decode(&u); err != nil {
+    // 		return err
+    // 	}
+
+    // 	return nil
+    // }
+    current() {
+        var url = baseURL;
+        url = url + "appid=" + this.client.getToken();
+        url = url + "&q=" + name;
+        url = url + "&units=" + this.client.units;
+        url = url + "&lang=" + this.client.lang;
+        
+        const res = this.client.getClient().get(url);
+        if (not res.success()) {
+            return res.unwrapError();
+        }
+
+        const data = JSON.parse(res.unwrap().content);
+        if (not data.success()) {
+            return res.unwrapError();
+        }
+
+        return data.unwrap();
+    }
+}

@@ -1,0 +1,170 @@
+// adapted from https://github.com/tidwall/lru
+import System;
+
+class Entry {
+    // private prev;
+    // private next;
+
+    init(var key, var value) {
+        this.prev = Entry("", "");
+        this.next = Entry("", "");
+    }
+}
+
+class Cache {
+    private head;
+    private tail;
+    private entries;
+
+    // check size
+    init(var size, onEvict) {
+        this.onEvict = onEvict;
+        this.head = nil;
+        this.tail = nil;
+        this.entries = {};
+    }
+
+    len() {
+        return this.entries.len();
+    }
+
+    set(key, value) {
+        var entry = this.entries.get(key);
+        if (entry == nil) {
+            entry = Entry(key, value);
+            this.entries[key] = entry;
+
+            if (this.head == nil) {
+                this.head = entry;
+                this.tail = entry;
+            } else {
+                this.head.prev = entry;
+                entry.next = this.head;
+                this.head = entry;
+            }
+        } else {
+            entry = this.entries.get(key);
+            entry.value = value;
+            this.promote();
+        }
+
+        if (this.entries.len() > this.size) {
+            const evicted = this.tail;
+            if (this.entries.exists(this.tail.key)) {
+                this.entries.remove(key);
+            }
+
+            this.tail = this.tail.prev;
+            this.tail.next = nil;
+
+            if (this.onEvict != nil) {
+                this.onEvict(evicted.key, evicted.value);
+            }
+        }
+    }
+
+    get(key) {
+        const entry = this.entries.get(key);
+        if (entry == nil) {
+            return nil;
+        }
+
+        this.promote(entry);
+
+        return entry.value;
+    }
+
+    delete(key) {
+        const entry = this.entries.get(key);
+        if (entry == nil) {
+            return;
+        }
+
+        if (this.entries.exists(key)) {
+            this.entries.remove(key);
+        }
+
+        if (this.entries.len() == 0) {
+            this.head = nil;
+            this.tail = nil;
+        } else if (entry == this.head) {
+            this.head = this.head.next;
+            this.head.prev = nil;
+        } else if (entry == this.tail) {
+            this.tail = this.tail.prev;
+            this.tail.next = nil;
+        } else {
+            entry.prev.next = entry.next;
+            entry.next.prev = entry.prev;
+        }
+    }
+
+    private promote(entry) {
+        if (this.head.key != entry.key) {
+            if (this.tail == entry) {
+                this.tail = this.tail.prev;
+                this.tail.next = nil;
+            } else {
+                entry.prev.next = entry.next;
+                entry.next.prev = entry.prev;
+            }
+
+            //entry.prev = nil;
+            entry.next = this.head;
+            this.head.prev = entry;
+            this.head = entry;
+        }
+    }
+}
+
+{ // main
+    const userData = [
+        {
+            "id": 0,
+            "name": "Brian",
+            "age": 42
+        },
+        {
+            "id": 1,
+            "name": "Jess",
+            "age": 40
+        },
+        {
+            "id": 2,
+            "name": "Ryan",
+            "age": 43
+        },
+        {
+            "id": 3,
+            "name": "Kyra",
+            "age": 38
+        },
+        {
+            "id": 4,
+            "name": "Ralph",
+            "age": 42
+        },
+        {
+            "id": 5,
+            "name": "Tina",
+            "age": 40
+        }
+    ];
+
+    const cache = Cache(4, nil);
+
+    userData.forEach(
+        def(ud) => {
+            cache.set(ud["id"], ud);
+        }
+    );
+
+    userData.forEach(
+        def(ud) => {
+            const val = cache.get(ud["id"]);
+            print("val: {}, len: {}".format(val, cache.len()));
+        }
+    );
+    
+    System.exit(0);
+}

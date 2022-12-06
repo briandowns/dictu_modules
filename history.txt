@@ -1,0 +1,17 @@
+class A{}
+class B{}
+const a = A();
+const b = B();
+a==b
+a==b;
+class A{}
+class B{}
+const a = A();
+const b = A();
+a==b;
+class A {};
+class A {}
+class B { init(var b) {}}
+const b = B(b)
+const b = B(b);
+b1 = B(1);

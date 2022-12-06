@@ -1,0 +1,48 @@
+import System;
+
+// Colors
+const Black   = 30;
+const Red     = 31;
+const Green   = 32;
+const Yellow  = 33;
+const Blue    = 34;
+const Magenta = 35;
+const Cyan    = 36;
+const White   = 37;
+const Grey    = 90;
+
+// Background Colors
+const Blackbg   = 40;
+const Redbg     = 41;
+const Greenbg   = 42;
+const Yellowbg  = 43;
+const Bluebg    = 44;
+const Magentabg = 45;
+const Cyanbg    = 46;
+const Whitebg   = 47;
+
+// Style
+const Bold      = 1;
+const Dim       = 2;
+const Italic    = 3;
+const Underline = 4;
+const Blinkslow = 5;
+const Blinkfast = 6;
+const Inverse   = 7;
+const Hidden    = 8;
+const Strikeout = 9;
+
+def colorize(str, ...style) {
+    var s = "\x1b[";
+    var l = style.len();
+    if (style.len() > 0) {
+        for (var k = 0; k < style.len(); k+=1) {
+            s += style[k].toString();
+            if (l > 1 and k < l-1) {
+                s += ";";
+            }
+        }
+        s += "m";
+    }
+    return '{}{}\x1b[0m'.format(s, str);
+}
