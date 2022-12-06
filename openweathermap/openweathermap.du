@@ -160,6 +160,24 @@ def validateStationDataParameter(param) {
     return valid;
 }
 
+// SendStationData will send an instance the provided url.Values to the
+// provided URL.
+// func SendStationData(data url.Values) {
+// 	resp, err := http.PostForm(dataPostURL, data)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+
+// 	fmt.Println(resp.Body)
+// }
+def sendStationData() {
+    const res = HTTP.post(dataPostURL, data);
+    if (not res.success()) {
+        return res.unwrapError();
+    }
+}
+
+
 // RetrieveIcon will get the specified icon from the API.
 def retrieveIcon(path, iconFile) {
     const fullPath = Path.join(path, iconFile);
