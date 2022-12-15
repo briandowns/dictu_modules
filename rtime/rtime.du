@@ -1,0 +1,86 @@
+// https://github.com/briandowns/r_time
+
+import Datetime;
+import HTTP;
+import System;
+
+/**
+ * urls is a list of sites to be queried.
+ */
+const urls = [
+    "https://facebook.com", 
+    "https://microsoft.com", 
+    "https://amazon.com", 
+    "https://google.com",
+    "https://youtube.com", 
+    "https://twitter.com", 
+    "https://reddit.com", 
+    "https://netflix.com",
+    "https://bing.com"
+];
+
+/**
+ * Endpoint contains the index in the results 
+ * array it belongs to, the url to be queried,
+ * and the retrieved timestamp.
+ */
+class Endpoint {
+    init(var idx, var url) {}
+}
+
+class Rtime {
+    init() {
+        this.endpoints = [];
+        this.results = [];
+
+        for (var i = 0; i < urls.len(); i += 1) {
+            this.endpoints.push(Endpoint(i, urls[i]));
+        }
+
+        const opts = {
+            "timeout": 20,
+            "headers": [
+                "Content-Type: application/json", 
+                "Accept: application/json",
+                "User-Agent: Dictu"
+            ],
+            "insecure": true,
+            "follow_redirects": false
+        };
+        this.hc = HTTP.newClient(opts);
+    }
+
+    now() {
+        this.endpoints.forEach(def(endpoint) => {
+            const ret = this.hc.get(endpoint.url);
+            if (not ret.success()) {
+                print(ret.unwrapError());
+                return;
+            }
+            
+            const headers = ret.unwrap().headers;
+
+            if (headers.len() > 1) {
+                headers.forEach(def(header) => {
+                    if (header.contains("date:") or header.contains("Date:")) {
+                        const seconds = Datetime.strptime("%a, %d %b %Y %H:%M:%S %Z", header.split("e: ")[1]);
+                        this.results.push(seconds);          
+                    }
+                });
+            }
+        });
+
+        this.results.sort();
+
+        return this.results[0];
+    }
+}
+
+
+{ // main
+    const r = Rtime();
+    const res = r.now();
+    print(res);
+
+    System.exit(0);
+}

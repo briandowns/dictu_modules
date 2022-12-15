@@ -1,0 +1,38 @@
+import System;
+
+/**
+ * RNG maintains state of the random number generator.
+ */
+class RNG {
+    init(var seed) {
+        this.x = 0;
+        this.w = 0;
+        this.seed = seed;
+        this.s = (this.seed << 1) + 0xb5ad4eceda1ce2a9;
+    }
+
+    /**
+    * updateSeed sets a new seed.
+    */
+    updateSeed(seed) {
+        this.seed = seed;
+    }
+
+    /**
+    * rng_uint64 returns a random 64 bit value.
+    */
+    gen() {
+        this.x += this.x;
+        this.x += (this.w += this.s);
+        
+        return ((this.x * this.x + this.w) >> 32) | ((this.x * this.x + this.w) << 32);
+    }
+
+}
+
+{ // main
+    const num = RNG(838373635);
+    print(num);
+
+    System.exit(0);
+}

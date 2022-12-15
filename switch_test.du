@@ -1,0 +1,12 @@
+const x = 10;
+switch (x) {
+    case 0: {print("nope 0");}
+    case 1: {print("nope 1");}
+    case 10: {print("yup 10");}
+    case 10: {print("yup 10 again");}
+    case 0: {print("nope 0 again");}
+    case 1: {print("nope 1 again");}
+    default: {print("in the default");}
+}
+
+print("and we're done...");

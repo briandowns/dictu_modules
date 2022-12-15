@@ -15,3 +15,14 @@ class B { init(var b) {}}
 const b = B(b)
 const b = B(b);
 b1 = B(1);
+import System;
+time();
+System.time();
+Datetime.strptime("%Y-%m-%d %H:%M:%S", "2020-01-01 00:00:00");
+import Datetime;
+Datetime.strptime("%Y-%m-%d %H:%M:%S", "2020-01-01 00:00:00");
+// Fri, 09 Dec 2022 05:35:12 GMT
+Datetime.strptime("%c", "Fri, 09 Dec 2022 05:35:12 GMT");
+Datetime.strptime("%c GMT", "Fri, 09 Dec 2022 05:35:12 GMT");
+Datetime.strptime("%a, %d %b %Y %H:%M:%S GMT", "Fri, 09 Dec 2022 05:35:12 GMT");
+Datetime.strptime("%a, %d %b %Y %H:%M:%S %Z", "Fri, 09 Dec 2022 05:35:12 GMT");

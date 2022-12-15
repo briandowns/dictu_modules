@@ -3,18 +3,25 @@ import System;
 
 { // main
     const opts = {
-            "timeout": 20,
-            "headers": [
-                "User-Agent: Dictu-OWM-Client"
-            ],
-            "insecure": true
-        };
+        "timeout": 20,
+        "headers": [
+            "User-Agent: Dictu-OWM-Client"
+        ],
+        "insecure": true,
+        "follow-redirects": true
+    };
         
     const client = HTTP.newClient(opts);
+
     const res = client.get("https://curl.se/download/curl-7.86.0.zip");
-    print(res.unwrap().content);
+    const result = res.unwrap();
+    result.headers.forEach(def(header) => print(header));
+    print("{}".format(result.content.len()));
     with("curl-7.86.0.zip", "w") {
-        file.write(res.unwrap().content);
+        for (var i = 0; i < result.content.len(); i += 1) {
+            file.write(result.content[i]);
+        }
     }
+
     System.exit(0);
 }

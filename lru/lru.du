@@ -2,8 +2,8 @@
 import System;
 
 class Entry {
-    // private prev;
-    // private next;
+    private prev;
+    private next;
 
     init(var key, var value) {
         this.prev = Entry("", "");
