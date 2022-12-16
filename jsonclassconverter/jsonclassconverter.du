@@ -1,0 +1,29 @@
+import JSON;
+
+// toJSON receives an instance of a class and returns
+// the JSON representation.
+def toJSON(klass) {
+    var data = {};
+
+    klass.getAttributes().get('properties')
+        .forEach(def(f) => f != '_class' ? data[f] = klass.getAttribute(f) : '');
+
+    return JSON.stringify(data);
+}
+
+
+// toClass receives JSON and the name of a class
+// to convert the JSON into.
+def toClass(json, klass) {
+    const res = JSON.parse(json);
+    if (not res.success()) {
+        return data;
+    }
+    const data = res.unwrap();
+
+    data.forEach(def(k, v) => {
+        klass.setAttribute(k, v);
+    });
+
+    return Success(0);
+}

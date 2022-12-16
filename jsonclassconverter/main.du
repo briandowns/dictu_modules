@@ -1,0 +1,29 @@
+#!/usr/bin/env dictu
+
+import System;
+
+from "jsonclassconverter.du" import toJSON, toClass;
+
+class Person {
+    init(var name, var age) {}
+}
+
+class Employee < Person {
+    init(var name, var age, var title) {
+        super.init(name, age);
+    }
+}
+
+{ // main
+    const e = Employee("Brian", 42, "Engineer");
+    const employeeJson = toJSON(e).unwrap();
+
+    print(employeeJson);
+
+    var e2 = Employee("", 0, "");
+    toClass(employeeJson, e2);
+
+    print(e2.name);
+
+    System.exit(0);
+}
