@@ -1,0 +1,14 @@
+#!/usr/bin/env dictu
+
+import System;
+
+from "words.du" import words;
+
+{ // main
+    // words.forEach(def(word) => {
+    //     print(word);
+    // });
+    print(words);
+
+    System.exit(0);
+}
