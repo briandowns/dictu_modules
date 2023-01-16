@@ -26,3 +26,9 @@ Datetime.strptime("%c", "Fri, 09 Dec 2022 05:35:12 GMT");
 Datetime.strptime("%c GMT", "Fri, 09 Dec 2022 05:35:12 GMT");
 Datetime.strptime("%a, %d %b %Y %H:%M:%S GMT", "Fri, 09 Dec 2022 05:35:12 GMT");
 Datetime.strptime("%a, %d %b %Y %H:%M:%S %Z", "Fri, 09 Dec 2022 05:35:12 GMT");
+def x() {}
+type(x)
+type(x);
+import term;
+import Term;
+print(Term.getSize());

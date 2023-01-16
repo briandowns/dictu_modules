@@ -1,0 +1,134 @@
+#!/usr/bin/env dictu
+
+import Process;
+import Random;
+import System;
+
+
+// clearScreen runs a shell clear command.
+def clearScreen() {
+    Process.run(["clear"]);
+}
+
+// anyKeyToContinue will wait for the user to hit a key.
+def anyKeyToContinue() {
+    const res = input("Press any key to continue...");
+
+	if (res != "") {
+		clearScreen();
+	}
+}
+
+const
+    win = 0,
+    lose = 1,
+    tie = 2;
+
+const
+    rock = "1",
+    paper = "2",
+    scissors = "3";
+
+const validAnswers = [rock, paper, scissors];
+
+// game holds the data collected during game play.
+class Game {
+    private rounds;
+    private wins;
+    private loses;
+    private ties;
+    private attempts;
+    private computerAnswer;
+
+    init() {
+        this.rounds = 0;
+        this.wins = 0;
+        this.loses = 0;
+        this.ties = 0;
+
+        this.genComputerGuess();
+    }
+
+    getWins() {
+        return this.wins;
+    }
+
+    getLoses() {
+        return this.loses;
+    }
+
+    getTies() {
+        return this.ties;
+    }
+
+    // processAnswer
+    private processAnswer(answer) {
+        switch (answer) {
+            case this.computerAnswer: {
+                print("tie!");
+                this.ties += 1;
+            }
+            case rock: {
+                if (this.computerAnswer == scissors) {
+                    this.wins += 1;
+                    print("Win!");
+                } else {
+                    this.loses += 1;
+                    print("Lose!");
+                }
+            }
+            case paper: {
+                if (this.computerAnswer == rock) {
+                    this.wins += 1;
+                    print("Win!");
+                } else {
+                    this.loses += 1;
+                    print("Lose!");
+                }
+            }
+            case scissors: {
+                if (this.computerAnswer == rock) {
+                    this.wins += 1;
+                    print("Win!");
+                } else {
+                    this.loses += 1;
+                    print("Lose!");
+                }
+            }
+        }
+
+        System.sleep(1);
+    }
+
+    // evalAnswer will provide the feedback on right, wrong, or tie.
+    evalAnswer(answer) {
+        this.processAnswer(answer);
+
+        this.genComputerGuess();
+    }
+    
+    genComputerGuess() {
+        this.computerAnswer = Random.select(validAnswers);
+    }
+}
+
+// main
+{
+    var game = Game();
+
+    while (true) {
+        clearScreen();
+
+        const answer = input("Rock     (1)\nPaper    (2)\nScissors (3)\n\nWins: {}, Loses: {}, Ties: {}\n\nAnswer: "
+            .format(game.getWins(), game.getLoses(), game.getTies()));
+        
+        if (not validAnswers.contains(answer)) {
+            print("Invalid answer: {}".format(answer));
+            anyKeyToContinue();
+        }
+
+        game.evalAnswer(answer);
+    }
+
+    System.exit(0);
+}
