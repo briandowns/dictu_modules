@@ -1,0 +1,207 @@
+// type Pair struct {
+// 	Key   interface{}
+// 	Value interface{}
+// 	element *list.Element
+// }
+class Pair {
+    init(key, value) {}
+}
+
+class OrderedDict {
+    private pairs;
+    private list;
+
+    init() {}
+
+    // get looks for the given key, and returns the value
+    // associated with it, or nil if not found.
+    get(key) {
+        if (this.pairs.exists(key)) {
+            return this.pairs.get(key);
+        }
+
+        return nil;
+    }
+
+    // getPair looks for the given key, and returns the pair
+    // associated with it, or nil if not found.
+    getPair(key) {
+        if (this.pairs.exists(key)) {
+            return {key: this.pairs.get(key)};
+        }
+
+        return nil;
+    }
+
+    // set sets the key-value pair, and returns what `Get` would 
+    // have returned on that key prior to the call to `Set`.
+    set(key, value) {
+        // if pair, present := om.pairs[key]; present {
+        //     oldValue := pair.Value
+        //     pair.Value = value
+        //     return oldValue, true
+        // }
+
+        // pair := &Pair{
+        //     Key:   key,
+        //     Value: value,
+        // }
+        // pair.element = om.list.PushBack(pair)
+        // om.pairs[key] = pair
+
+        // return nil, false
+        if (this.pairs.exists(key)) {
+            var pair = this.pairs.get(key);
+            const oldVal = pair.value;
+            pair.value = value;
+            return oldVal;
+        }
+
+        
+    }
+
+    delete(key) {}
+
+    len() {
+        this.pairs.len();
+    }
+
+    oldest() {}
+
+    newest() {}
+
+}
+
+// Set sets the key-value pair, and returns what `Get` would have returned
+// on that key prior to the call to `Set`.
+func (om *OrderedMap) Set(key interface{}, value interface{}) (interface{}, bool) {
+	if pair, present := om.pairs[key]; present {
+		oldValue := pair.Value
+		pair.Value = value
+		return oldValue, true
+	}
+
+	pair := &Pair{
+		Key:   key,
+		Value: value,
+	}
+	pair.element = om.list.PushBack(pair)
+	om.pairs[key] = pair
+
+	return nil, false
+}
+
+// Delete removes the key-value pair, and returns what `Get` would have returned
+// on that key prior to the call to `Delete`.
+func (om *OrderedMap) Delete(key interface{}) (interface{}, bool) {
+	if pair, present := om.pairs[key]; present {
+		om.list.Remove(pair.element)
+		delete(om.pairs, key)
+		return pair.Value, true
+	}
+	return nil, false
+}
+
+// Len returns the length of the ordered map.
+func (om *OrderedMap) Len() int {
+	return len(om.pairs)
+}
+
+// Oldest returns a pointer to the oldest pair. It's meant to be used to iterate on the ordered map's
+// pairs from the oldest to the newest, e.g.:
+// for pair := orderedMap.Oldest(); pair != nil; pair = pair.Next() { fmt.Printf("%v => %v\n", pair.Key, pair.Value) }
+func (om *OrderedMap) Oldest() *Pair {
+	return listElementToPair(om.list.Front())
+}
+
+// Newest returns a pointer to the newest pair. It's meant to be used to iterate on the ordered map's
+// pairs from the newest to the oldest, e.g.:
+// for pair := orderedMap.Oldest(); pair != nil; pair = pair.Next() { fmt.Printf("%v => %v\n", pair.Key, pair.Value) }
+func (om *OrderedMap) Newest() *Pair {
+	return listElementToPair(om.list.Back())
+}
+
+// Next returns a pointer to the next pair.
+func (p *Pair) Next() *Pair {
+	return listElementToPair(p.element.Next())
+}
+
+// Previous returns a pointer to the previous pair.
+func (p *Pair) Prev() *Pair {
+	return listElementToPair(p.element.Prev())
+}
+
+func listElementToPair(element *list.Element) *Pair {
+	if element == nil {
+		return nil
+	}
+	return element.Value.(*Pair)
+}
+
+// KeyNotFoundError may be returned by functions in this package when they're called with keys that are not present
+// in the map.
+type KeyNotFoundError struct {
+	MissingKey interface{}
+}
+
+var _ error = &KeyNotFoundError{}
+
+func (e *KeyNotFoundError) Error() string {
+	return fmt.Sprintf("missing key: %v", e.MissingKey)
+}
+
+// MoveAfter moves the value associated with key to its new position after the one associated with markKey.
+// Returns an error iff key or markKey are not present in the map.
+func (om *OrderedMap) MoveAfter(key, markKey interface{}) error {
+	elements, err := om.getElements(key, markKey)
+	if err != nil {
+		return err
+	}
+	om.list.MoveAfter(elements[0], elements[1])
+	return nil
+}
+
+// MoveBefore moves the value associated with key to its new position before the one associated with markKey.
+// Returns an error iff key or markKey are not present in the map.
+func (om *OrderedMap) MoveBefore(key, markKey interface{}) error {
+	elements, err := om.getElements(key, markKey)
+	if err != nil {
+		return err
+	}
+	om.list.MoveBefore(elements[0], elements[1])
+	return nil
+}
+
+func (om *OrderedMap) getElements(keys ...interface{}) ([]*list.Element, error) {
+	elements := make([]*list.Element, len(keys))
+	for i, k := range keys {
+		pair, present := om.pairs[k]
+		if !present {
+			return nil, &KeyNotFoundError{k}
+		}
+		elements[i] = pair.element
+	}
+	return elements, nil
+}
+
+// MoveToBack moves the value associated with key to the back of the ordered map.
+// Returns an error iff key is not present in the map.
+func (om *OrderedMap) MoveToBack(key interface{}) error {
+	pair, present := om.pairs[key]
+	if !present {
+		return &KeyNotFoundError{key}
+	}
+	om.list.MoveToBack(pair.element)
+	return nil
+}
+
+// MoveToFront moves the value associated with key to the front of the ordered map.
+// Returns an error iff key is not present in the map.
+func (om *OrderedMap) MoveToFront(key interface{}) error {
+	pair, present := om.pairs[key]
+	if !present {
+		return &KeyNotFoundError{key}
+	}
+	om.list.MoveToFront(pair.element)
+	return nil
+}

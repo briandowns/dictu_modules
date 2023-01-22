@@ -1,0 +1,36 @@
+/**
+ * colections.du
+ *
+ * Testing collections implementations.
+ */
+from UnitTest import UnitTest;
+from "collections.du" import OrderedDict;
+
+class TestCollections < UnitTest {
+    testOrderedDict() {
+        var od = OrderedDict();
+
+        od.set("Tom", 42);
+        od.set("Dick", 40);
+        od.set("Susan", 39);
+        od.set("Fred", 43);
+
+        this.assertEquals(od.get("Tom"), 42);
+        this.assertEquals(od.size(), 4);
+        this.assertEquals(od.nth(3), 43);
+        this.assertEquals(od.first(), 42);
+        this.assertEquals(od.last(), 43);
+        this.assertEquals(od.firstKey(), "Tom");
+        this.assertEquals(od.lastKey(), "Fred");
+        this.assertEquals(type(od.keys()), "list");
+        this.assertEquals(od.keyAtIdx(1), "Dick");
+        this.assertEquals(od.keys().len(), 4);
+        this.assertEquals(type(od.values()), "list");
+
+        od.clear();
+
+        this.assertEquals(od.size(), 0);
+    }
+}
+
+TestCollections().run();

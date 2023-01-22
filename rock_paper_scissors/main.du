@@ -1,8 +1,8 @@
 #!/usr/bin/env dictu
 
-import Process;
-import Random;
-import System;
+import Process,
+    Random,
+    System;
 
 
 // clearScreen runs a shell clear command.
