@@ -5,36 +5,46 @@ class OrderedDict {
         this.arr = [];
     }
 
+    // set stores the given key and value.
     set(key, val) {
         if (not this.dict.exists(key)) {
             this.arr.push(key);
         }
-
+            
         this.dict[key] = val;
 
         return this.dict.get(key);
     }
 
+    // get retrieves the value for the given key.
     get(key) {
         return this.dict.get(key);
     }
 
+    // nth takes the index of the desired entry
+    // and returns that value.
     nth(idx) {
         return this.dict[this.arr[idx]];
     }
 
+    // first returns the value associated with the first
+    // key in the dict.
     first() {
         return this.dict[this.arr[0]];
     }
 
+    // last returns the value associated with the last
+    // key in the dict.
     last() {
         return this.dict[this.arr[this.arr.len()-1]];
     }
 
+    // exists checks for the exitsence of the given key.
     exists(key) {
         this.dict.exists(key);
     }
 
+    // remove deletes the entry in the store for the given key.
     remove(key) {
         for (var i = 0; i < this.arr.len(); i += 1) {
             if (this.arr[i] == key) {
@@ -44,44 +54,52 @@ class OrderedDict {
         }
     }
 
-    // add(idx, key, value) {
-    //     if (this.arr.findIndex(def(k) => key == k) != nil) {
-    //         return Error("key already exists");
-    //     }
+    // insert adds the given value at the given index.
+    insert(idx, key, value) {
+        if (this.arr.findIndex(def(k) => key == k) != nil) {
+            return Error("key already exists");
+        }
 
-    //     this.arr.splice(idx, 0, key);
-    //     this.dict[key] = val;
-    // }
+        this.arr.splice(idx, 0, key);
+        this.dict[key] = val;
+    }
     
-    forEach(callback) {
+    // forEach
+    forEach(func) {
         for (var i = 0; i < this.arr.len(); i += 0) {
             var key = this.arr[i];
             var val = this.dict.get(key);
-            callback(key, val);
+            func(key, val);
         }
     }
 
+    // size returns the size of the store.
     size() {
         return this.arr.len();
     }
 
+    // keys returns a list of the keys in the store.
     keys() {
         return this.arr;
     }
 
+    // firstKey returns the first key in the store.
     firstKey() {
         return this.arr[0];
     }
 
+    // lastKey returns the last key in the store.
     lastKey() {
         return this.arr[this.arr.len()-1];
     }
 
+    // keyAtIdx returns the key for the given index.
     keyAtIdx(idx) {
         if (this.arr.len() < idx+1) return "";
         return this.arr[idx];
     }
 
+    // values returns a list of all values in the store.
     values() {
         var vals = [];
 
@@ -92,120 +110,14 @@ class OrderedDict {
         return vals;
     }
 
+    // clear removes all entries in the store.
     clear() {
         this.dict = {};
         this.arr = [];
     }
 
+    // clone returns an exact copy of the given store.
     clone() {
         return this.deepCopy();
     }
 }
-
-// function OrderedDict() {
-
-//   this.dict = {};
-//   this.arr = [];
-
-// }
-
-// OrderedDict.prototype = {
-//   set: function(key, val) {
-//     if (!(key in this.dict)) {
-//       this.arr.push(key);
-//     }
-
-//     this.dict[key] = val;
-//     return this.dict[key];
-//   },
-
-//   get: function(key) {
-//     return this.dict[key];
-//   },
-
-//   nth: function(index) {
-//     return this.dict[this.arr[index]];
-//   },
-
-//   first: function() {
-//     return this.dict[this.arr[0]];
-//   },
-
-//   last: function() {
-//     return this.dict[this.arr[this.arr.length - 1]];
-//   },
-
-//   has: function(key){
-//     return !!this.dict[key];
-//   },
-
-//   remove: function(key) {
-//     for (let i = 0, l = this.arr.length; i < l; i++) {
-//       if (this.arr[i] === key) {
-//         this.arr.splice(i, 1);
-//         delete this.dict[key];
-//       }
-//     }
-//   },
-
-//   insert: function(index, key, val) {
-//     if (this.arr.indexOf(key) !== -1) throw 'key `' + key + '` already exists';
-//     this.arr.splice(index, 0, key);
-//     this.dict[key] = val;
-//   },
-
-//   forEach: function(callback) {
-//     for (let i = 0, l = this.arr.length; i < l; i++) {
-//       let key = this.arr[i],
-//           val = this.dict[key];
-//       callback(val, key);
-//     }
-//   },
-
-//   sort: function() {
-//     //to be overridden
-//   },
-
-//   size: function() {
-//     return this.arr.length;
-//   },
-
-//   keys: function() {
-//     return this.arr;
-//   },
-
-//   firstKey: function() {
-//     return this.arr[0];
-//   },
-
-//   lastKey: function() {
-//     return this.arr[this.arr.length - 1];
-//   },
-
-//   keyAtIndex: function(n) {
-//     return this.arr[n];
-//   },
-
-//   values: function() {
-//     let vals = [],
-//       len = this.arr.length;
-//     for (let i = 0; i < len; i++) {
-//       vals.push(this.dict[this.arr[i]]);
-//     }
-//     return vals;
-//   },
-
-//   clear: function() {
-//     this.dict = {};
-//     this.arr = [];
-//   },
-
-//   clone: function() {
-//     let d = new OrderedDict();
-//     d.dict = JSON.parse(JSON.stringify(this.dict));
-//     d.arr = JSON.parse(JSON.stringify(this.arr));
-
-//     return d;
-
-//   }
-// };
