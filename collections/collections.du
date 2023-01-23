@@ -24,13 +24,13 @@ class OrderedDict {
     // nth takes the index of the desired entry
     // and returns that value.
     nth(idx) {
-        return this.dict[this.arr[idx]];
+        return this.dict.get(this.arr[idx]);
     }
 
     // first returns the value associated with the first
     // key in the dict.
     first() {
-        return this.dict[this.arr[0]];
+        return this.dict.get(this.arr[0]);
     }
 
     // last returns the value associated with the last
@@ -67,8 +67,8 @@ class OrderedDict {
     // forEach
     forEach(func) {
         for (var i = 0; i < this.arr.len(); i += 0) {
-            var key = this.arr[i];
-            var val = this.dict.get(key);
+            const key = this.arr[i];
+            const val = this.dict.get(key);
             func(key, val);
         }
     }
@@ -104,7 +104,7 @@ class OrderedDict {
         var vals = [];
 
         for (var i = 0; i < this.arr.len(); i += 1) {
-            vals.push(this.dict[this.arr[i]]);
+            vals.push(this.dict.get(this.arr[i]));
         }
 
         return vals;
