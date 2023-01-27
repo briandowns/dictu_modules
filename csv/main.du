@@ -1,0 +1,13 @@
+#!/usr/bin/env dictu 
+
+import System;
+
+from "csv.du" import parse;
+
+// main
+{
+    const reader = parse("data.csv");
+    reader.forEach(def(row) => print(row));
+
+    System.exit(0);
+}

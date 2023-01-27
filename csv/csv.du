@@ -1,0 +1,27 @@
+// Module csv provides functions to read, parse, and write data
+// in CSV format.
+
+// parse opens the file in the given path, parses each line and
+// record, and saves them to a list and returns it.
+def parse(path) {
+    var data = [];
+
+    with(path, "r") {
+        var line;
+
+        while((line = file.readLine()) != nil) {
+            var record = line.split(",");
+
+            for (var i = 0; i < record.len(); i += 1) {
+                record[i] = record[i].strip();
+            }
+
+            data.push(record);
+        }
+    }
+
+    return data;
+}
+
+// write
+def write(path) {}
