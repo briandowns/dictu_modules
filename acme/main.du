@@ -1,0 +1,9 @@
+#!/usr/bin/env dictu
+
+import System;
+
+// main
+{
+
+    System.exit(0);
+}

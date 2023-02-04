@@ -2,21 +2,13 @@
 import System;
 
 class Entry {
-    private prev;
-    private next;
-
     init(var key, var value) {
-        this.prev = {};
-        this.next = {};
+        this.next = nil;
+        this.prev = nil;
     }
 }
 
 class Cache {
-    private head;
-    private tail;
-    private entries;
-
-    // check size
     init(var size, onEvict) {
         this.onEvict = onEvict;
         this.head = nil;
