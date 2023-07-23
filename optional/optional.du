@@ -37,7 +37,7 @@ class Some < Optional {
     //value { _value }
 
     isPresent() { 
-        return this._value != null;
+        return this._value != nil;
     }
 
     get() {

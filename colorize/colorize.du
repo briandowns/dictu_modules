@@ -1,15 +1,15 @@
 import System;
 
 // Colors
-const Black   = 30;
-const Red     = 31;
-const Green   = 32;
-const Yellow  = 33;
-const Blue    = 34;
-const Magenta = 35;
-const Cyan    = 36;
-const White   = 37;
-const Grey    = 90;
+const Black   = 30,
+      Red     = 31,
+      Green   = 32,
+      Yellow  = 33,
+      Blue    = 34,
+      Magenta = 35,
+      Cyan    = 36,
+      White   = 37,
+      Grey    = 90;
 
 // Background Colors
 const Blackbg   = 40;
@@ -32,9 +32,12 @@ const Inverse   = 7;
 const Hidden    = 8;
 const Strikeout = 9;
 
+// RED='\033[0;31m'
+
 def colorize(str, ...style) {
     var s = "\x1b[";
     var l = style.len();
+
     if (style.len() > 0) {
         for (var k = 0; k < style.len(); k+=1) {
             s += style[k].toString();
@@ -44,5 +47,10 @@ def colorize(str, ...style) {
         }
         s += "m";
     }
+
     return '{}{}\x1b[0m'.format(s, str);
+}
+
+{
+    print("\e[1;31m {} \e[0m".format("This is red text"));   
 }

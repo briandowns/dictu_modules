@@ -1,0 +1,5 @@
+x = "test";
+var x = "test";
+x.forEach(def (i) => print(i));
+x[0].forEach(def (i) => print(i));
+x[0:].forEach(def (i) => print(i));

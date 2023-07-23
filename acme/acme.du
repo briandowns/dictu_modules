@@ -1,6 +1,25 @@
 // Modue acme ...
 
+import Base64;
+import System;
+
+
 const API="https://acme-v02.api.letsencrypt.org",
       API_STAGING="https://acme-staging-v02.api.letsencrypt.org";
 
 
+// base64url()
+// {
+// 	base64 -w 0 | sed 's/+/-/g' | sed 's/\//_/g' | sed 's/=*$//g'
+// }
+def base64EncodeURL(url) {
+    const encoded = Base64.encode(url);
+    print(encoded);
+    print(Base64.encode("asdf"));
+}
+
+{
+    base64EncodeURL("https://www.google.com");
+
+    System.exit(0);
+}

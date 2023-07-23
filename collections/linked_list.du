@@ -34,7 +34,7 @@ class LinkedList {
 
     // Create a new node at the Head of the Linked List
     insert(data) {
-        var newNode = Node(data);
+        const newNode = Node(data);
 
         newNode.setNext(this.head);
         this.head = newNode;

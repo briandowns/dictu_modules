@@ -1,0 +1,64 @@
+import System;
+
+let board = [];
+const POINTER = 0;
+
+function matchingBracketIndex(arr) {
+  if (arr[0] !== "[") {
+    throw `Expected arr[0] to be [, got ${arr[0]}`
+  }
+
+  let stack = ["["];
+  for (let [x, i] of arr.map((x, i) => [x, i]).slice(1)) {
+    switch (x) {
+      case "[":
+        stack.push(x);
+        break;
+      case "]":
+        stack.pop();
+        if (stack.length === 0) return i;
+    }
+  }
+  return -1;
+}
+
+def 
+
+function evaluate(brainfuck) {
+  if (brainfuck.length === 0) return;
+
+  switch (brainfuck[0]) {
+    case "+":
+      board[pointer]++;
+      break;
+    case "-":
+      if (board[pointer] > 0) board[pointer]--;
+      break;
+    case ">":
+      if (pointer < 30000) pointer++;
+      break;
+    case "<":
+      if (pointer > 0) pointer--;
+      break;
+    case ".":
+      process.stdout.write(String.fromCharCode(board[pointer]));
+      break;
+    case "[":
+      const i = matchingBracketIndex(brainfuck);
+      while (board[pointer] !== 0) {
+        evaluate(brainfuck.slice(1, i));
+      }
+      brainfuck = brainfuck.slice(i);
+      break;
+    case "]":
+      throw "Unexpected closed bracket while reading";
+  }
+
+  evaluate(brainfuck.slice(1));
+}
+
+{
+    evaluate("++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.".split(""));
+
+    System.exit(0);
+}

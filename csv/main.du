@@ -2,12 +2,16 @@
 
 import System;
 
-from "csv.du" import parse;
+from "csv.du" import Opts, Parser;
 
 // main
 {
-    const reader = parse("data.csv");
-    reader.forEach(def(row) => print(row));
+    const opts = Opts("data.csv", true);
+    Parser(opts)
+        .parse()
+        .forEach(
+            def(row) => print(row)
+        );
 
     System.exit(0);
 }

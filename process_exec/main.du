@@ -1,0 +1,17 @@
+import Env;
+import Process;
+import System;
+
+
+{ // main
+    print(Env.get("PATH"));
+    Process.run(["echo", "${PATH}"]).match(
+        def(r) => print(r),
+        def(error) => {
+            print(error);
+            System.exit(1);  
+        }
+    );
+    
+    System.exit(0);
+}
