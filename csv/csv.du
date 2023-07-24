@@ -6,37 +6,49 @@
 // (default: ",") which indicates the record delimiter.
 class Opts {
 
-    init(var path, var firstLineHeader=false, var delimiter=",") {
-        this.path = path;
-        this.firstLineHeader = firstLineHeader;
-        this.delimiter = delimiter;
-    }
+    init(var path,
+        var firstLineHeader=false,
+        var delimiter=",",
+        var commentCharacter="#",
+        var startLine = 0) {}
 }
 
 // Parser opens the file in the given path, parses each line and record, and
 // saves them to a list and returns it.
 class Parser {
 
+    private columnCount;
+
     init(var opts) {
         this.opts = opts;
     }
 
     parse() {
-       var data = [];
+        if (this.opts.delimiter == this.opts.commentCharacter) {
+            return Error("delimiter and comment character aren't alowed to be the same");
+        }
+
+        var data = [];
 
         with(this.opts.path, "r") {
             var line;
             var lineNum = 0;
-            var startLine = 0;
-
-            if (this.opts.firstLineHeader) {
-                startLine = 1;
-            }
 
             while((line = file.readLine()) != nil) {
+                lineNum += 1;
+
+                if (lineNum == 1 and this.opts.firstLineHeader) {
+                    continue;
+                }
+
+                if (line.startsWith(this.opts.commentCharacter)) {
+                    continue;
+                }
+
                 var record = line.split(this.opts.delimiter);
-                
-                for (var i = startLine; i < record.len(); i += 1) {
+                this.columnCount = record.len();
+
+                for (var i = this.opts.startLine; i < record.len(); i += 1) {
                     record[i] = record[i].strip();
                 }
 
@@ -44,7 +56,7 @@ class Parser {
             }
         }
 
-        return data;
+        return Success(data);
     }
 
     // write
@@ -56,6 +68,8 @@ class Parser {
         with(this.opts.path, "w") {
 
         }
+
+        return Success(nil);
     }
 
     // writeAll
@@ -67,5 +81,11 @@ class Parser {
         with(this.opts.path, "w") {
 
         }
+
+        return Success(nil);
+    }
+
+    getColumnCount() {
+        return this.columnCount;
     }
 }
