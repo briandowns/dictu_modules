@@ -45,8 +45,7 @@ class Person {
     init(var name, var age) {}
 }
 
-// main
-{
+{ // main
     const tmpl = "Hello {name}! You are {age} years old.";
     const p = Person("John", 12);
 
