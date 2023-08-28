@@ -1,0 +1,27 @@
+/** Fibers API Idea 2 **/
+
+import Process;
+
+
+def isEven(n) {
+    return n % 2 == 0;
+}
+
+def workerStatuses(workers) {
+    workers.forEach(def (2) => print(w.status()));
+}
+
+{ // main
+    var workers = [];
+
+    const f1 = Process.fiber.new();
+
+    [1, 2, 3, 4, 5].forEach(def(x) => {
+        const w = Fiber.new();
+        workers.push(w);
+        w.run({
+            isEvent(x);
+        });
+    });
+}
+

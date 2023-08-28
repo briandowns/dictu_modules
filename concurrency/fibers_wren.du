@@ -1,0 +1,55 @@
+/** Wren Fibers **/
+
+import Process;
+import System;
+
+
+class Fiber {
+    private func;
+
+    init(func) {
+        this.func = func;
+    }
+
+    call(arg=nil) {
+        
+    }
+
+    isDone() {
+
+    }
+
+    run() {
+
+    }
+
+    yeild(arg=nil) {
+
+    }
+
+    static abort(message) {
+        print(message);
+        System.exit(1);
+    }
+
+    suspend() {
+
+    }
+
+    try() {
+
+    }
+
+    transfer(arg=nil) {
+
+    }
+
+    current() {
+        return this;
+    }
+}
+
+{
+
+    System.exit(0);
+}

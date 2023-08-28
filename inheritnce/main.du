@@ -1,0 +1,67 @@
+import JSON;
+import "mod.du" as bases;
+
+@ClassA
+class A {
+    @FieldA
+    var a = "asdf333";
+    init() {
+        print("class annotations: {}".format(this._class.classAnnotations));
+    }
+
+    @MethodA
+    methodA() {}
+}
+
+@ClassB
+class B < A {
+    @FieldB
+    var b = 999;
+
+    init() {
+        print("class annotations: {}".format(this._class.classAnnotations));
+        print("method annotations: {}".format(this._class.methodAnnotations));
+        print("field annotations: {}".format(this._class.fieldAnnotations));
+    }
+
+    @TestOverwrite
+    someMethod() {}
+}
+
+B();
+
+class D {
+    init() {}
+
+    modMeth() {
+        print("we're in!");
+    }
+}
+
+
+class Dog < bases.Animal {
+    init() {
+
+    }
+
+    meth() {}
+}
+
+const dog = Dog();
+dog.speak("woof!");
+
+class C {
+    init() {}
+}
+
+class JSON {
+    init() {
+        this.c = C();
+    }
+}
+
+class Ugh < JSON {}
+
+{
+    const ugh = Ugh();
+}

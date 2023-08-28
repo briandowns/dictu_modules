@@ -1,0 +1,12 @@
+/** Threads Example 1 **/
+
+import Process;
+import System;
+
+
+
+
+{ // main
+
+    System.exit(0);
+}

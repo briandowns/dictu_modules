@@ -60,3 +60,25 @@ import System, Env;
 const x = 0;
 var x;
 x = 9;
+import "C";
+import C;
+class C {}
+const c = C();
+{const c = C();}
+def f() { ```sh}
+>>> class C {}
+>>> const c = C();
+Error: File 'repl', line 1
+       'module' is not callable
+class C {}
+def f() { const c = C();  }
+f()
+f();
+def f() { var c = C();  }
+f();
+var c = 0;
+print(c);
+const C = 90;
+print(C);
+var C = 90;
+print(C);

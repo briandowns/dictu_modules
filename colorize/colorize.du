@@ -51,6 +51,17 @@ def colorize(str, ...style) {
     return '{}{}\x1b[0m'.format(s, str);
 }
 
-{
-    print("\e[1;31m {} \e[0m".format("This is red text"));   
+class BColors {
+    var warning = '\033[93m';
+    var endc = '\033[0m';
+
+    init() {}
+}
+
+{ // main
+    //print("\e[1;31m {} \e[0m".format("This is red text"));
+
+    print(BColors().warning + " hello " + BColors().endc);
+
+    System.exit(0);
 }

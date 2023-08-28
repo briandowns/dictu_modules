@@ -1,0 +1,5 @@
+class Animal {
+    speak(word) {
+        print(word);
+    }
+}

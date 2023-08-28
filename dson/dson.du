@@ -1,0 +1,39 @@
+import JSON;
+import System;
+
+
+class Dson {
+    init() {}
+
+    static parse(data) {}
+
+    static stringify(klass) {
+        const classRef = klass._class;
+
+        if (classRef.fieldAnnotations.len() == 0) {
+            return Error("");
+        }
+
+        const fieldAnnotations = classRef.fieldAnnotations;
+                
+
+        return Success(nil);
+    }
+}
+
+class Person {
+    @Json("first_name")
+    var firstName = "";
+
+    init() {}
+}
+
+{ // main
+    const dson = Dson();
+
+    const person = Person();
+    person.firstName = "Brian";
+    print(dson.stringify(person).unwrap());
+
+    System.exit(0);
+}
