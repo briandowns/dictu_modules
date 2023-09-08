@@ -82,3 +82,10 @@ const C = 90;
 print(C);
 var C = 90;
 print(C);
+class A {}
+const a = A();
+type(a);
+import Object;
+var "x";
+var x = "x";
+if (x.hasAttribute("x")) {}

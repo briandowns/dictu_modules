@@ -1,67 +1,71 @@
 import JSON;
 import "mod.du" as bases;
 
-@ClassA
+@ClassA("asdf1234")
 class A {
     @FieldA
     var a = "asdf333";
-    init() {
-        print("class annotations: {}".format(this._class.classAnnotations));
-    }
 
-    @MethodA
+    @MethodA(0)
     methodA() {}
 }
 
-@ClassB
+@ClassB(7)
 class B < A {
-    @FieldB
+    @FieldB("lklk")
     var b = 999;
 
     init() {
-        print("class annotations: {}".format(this._class.classAnnotations));
+        print("class B annotations: {}".format(this._class.classAnnotations));
         print("method annotations: {}".format(this._class.methodAnnotations));
         print("field annotations: {}".format(this._class.fieldAnnotations));
     }
 
-    @TestOverwrite
-    someMethod() {}
+    @MethodB
+    methodB() {}
 }
 
-B();
+const a = A();
+print("Class A: {}".format(a._class.classAnnotations));
+print("Class A: {}".format(a._class.methodAnnotations));
+print("Class A: {}".format(a._class.fieldAnnotations));
+const b = B();
+print("Class B: {}".format(b._class.classAnnotations));
+print("Class B: {}".format(b._class.methodAnnotations));
+print("Class B: {}".format(b._class.fieldAnnotations));
 
-class D {
-    init() {}
+// class D {
+//     init() {}
 
-    modMeth() {
-        print("we're in!");
-    }
-}
+//     modMeth() {
+//         print("we're in!");
+//     }
+// }
 
 
-class Dog < bases.Animal {
-    init() {
+// class Dog < bases.Animal {
+//     init() {
 
-    }
+//     }
 
-    meth() {}
-}
+//     meth() {}
+// }
 
-const dog = Dog();
-dog.speak("woof!");
+// const dog = Dog();
+// dog.speak("woof!");
 
-class C {
-    init() {}
-}
+// class C {
+//     init() {}
+// }
 
-class JSON {
-    init() {
-        this.c = C();
-    }
-}
+// class JSON {
+//     init() {
+//         this.c = C();
+//     }
+// }
 
-class Ugh < JSON {}
+// class Ugh < JSON {}
 
-{
-    const ugh = Ugh();
-}
+// {
+//     const ugh = Ugh();
+// }

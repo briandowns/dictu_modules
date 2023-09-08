@@ -1,6 +1,7 @@
 #!/usr/bin/env dictu
 
-import Process,
+import
+    Process,
     Random,
     System;
 

@@ -5,7 +5,6 @@
 // whether or not the first line of the file is a header, and delimiter 
 // (default: ",") which indicates the record delimiter.
 class Opts {
-
     init(var path,
         var firstLineHeader=false,
         var delimiter=",",
@@ -16,7 +15,6 @@ class Opts {
 // Parser opens the file in the given path, parses each line and record, and
 // saves them to a list and returns it.
 class Parser {
-
     private columnCount;
 
     init(var opts) {

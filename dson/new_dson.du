@@ -13,37 +13,43 @@ class Dson {
 
     parse(data) {}
 
-    stringify(klass) {
+    private processClass(klass) {
         const fields = klass.getAttributes()["fields"].filter(def(field) => field != "_name");
         const fieldAnnotations = klass._class.fieldAnnotations;
 
         var data = {};
 
-        for (var i = 0; i < fields.len(); i += 1) {
-            if (fieldAnnotations.exists(fields[i])) {
-                if (fieldAnnotations[fields[i]].exists(annotationName)) {
-                    const fieldName = fieldAnnotations[fields[i]].get(annotationName);
-                    const fieldValue = klass.getAttribute(fields[i]);
-                    const fieldType = type(fieldValue);
+        fields.forEach(def(field) => {
+            const fieldValue = klass.getAttribute(field);
+            const fieldType = type(fieldValue);
+            var fieldName = "";
 
-                    if (dictuTypes.contains(fieldType)) {
-                        data[fieldName] = fieldValue;
-                    } else {
-                        data[fields[i]] = this.stringify(fieldValue).unwrap();
-                    }
+            if (klass._class.fieldAnnotations != nil and fieldAnnotations.exists(field)) {
+                if (fieldAnnotations.get(field).exists(annotationName)) {
+                    fieldName = fieldAnnotations[field].get(annotationName);
                 }
+            } else {
+                fieldName = field;
             }
-        }
 
-        return Success(data);
+            if (dictuTypes.contains(fieldType)) {
+                data[fieldName] = fieldValue;
+            } else {
+                data[fieldName] = this.processClass(fieldValue);
+            }
+        });
+
+        return data;
+    }
+
+    stringify(klass) {
+        const data = this.processClass(klass);
+        return JSON.stringify(data);
     }
 }
 
 class Job {
-    @Json("title")
     var title = "";
-
-    @Json("salary")
     var salary = 0;
 
     init() {}
@@ -56,13 +62,8 @@ class Person {
     @Json("last_name")
     var lastName = "";
 
-    @Json("age")
     var age = 0;
-
-    @Json("titles")
     var titles = [];
-
-    @Json("job")
     var job = nil;
 
     init() {}
