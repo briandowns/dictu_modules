@@ -11,6 +11,10 @@ const dictuTypes = ["number", "string", "set", "list", "dict"];
 class Dson {
     init() {}
 
+    // parse takes a string and a class instance, parses the string 
+    // containing the JSON into a dictionary, and attempts to map
+    // the fields to the given class with help from the class
+    // annotations.
     parse(data, klass) {
         if (type(data) != "string") {
             return Error("data passed is not of type 'string'");
@@ -47,6 +51,10 @@ class Dson {
         return Success(res);
     }
 
+    // processClass takes a class, parses the fields and annotations, parses the fields and 
+    // data info a dictionary and returns the results. If a field is determined to be a class,
+    // processClass will be called recursively on that type with the results being returned 
+    // and added to the top level dict.
     private processClass(klass) {
         const fields = klass.getAttributes()["fields"].filter(def(field) => field != "_name");
         const fieldAnnotations = klass._class.fieldAnnotations;
@@ -76,6 +84,8 @@ class Dson {
         return data;
     }
 
+    // stringify receives a class and returns a Result object
+    // that unwraps to a JSON encoded string.
     stringify(klass) {
         const data = this.processClass(klass);
         return JSON.stringify(data);
