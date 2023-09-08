@@ -11,7 +11,41 @@ const dictuTypes = ["number", "string", "set", "list", "dict"];
 class Dson {
     init() {}
 
-    parse(data) {}
+    parse(data, klass) {
+        if (type(data) != "string") {
+            return Error("data passed is not of type 'string'");
+        }
+
+        var res = Object.createFrom(klass._name);
+        if (not res.success()) {
+            return res;
+        }
+        res = res.unwrap();
+
+        const parsed = JSON.parse(data);
+        if (not parsed.success()) {
+            return parsed;
+        }
+
+        const fields = klass.getAttributes()["fields"].filter(def(field) => field != "_name");
+        const fieldAnnotations = klass._class.fieldAnnotations;
+
+        fields.forEach(def(field) => {
+            var fieldName = "";
+
+            if (klass._class.fieldAnnotations != nil and fieldAnnotations.exists(field)) {
+                if (fieldAnnotations.get(field).exists(annotationName)) {
+                    fieldName = fieldAnnotations[field].get(annotationName);
+                    res.setAttribute(field, parsed.unwrap()[fieldName]);
+                }
+            } else {
+                fieldName = field;
+                res.setAttribute(fieldName, parsed.unwrap()[fieldName]);
+            }
+        });
+
+        return Success(res);
+    }
 
     private processClass(klass) {
         const fields = klass.getAttributes()["fields"].filter(def(field) => field != "_name");
@@ -83,7 +117,16 @@ class Person {
     person.titles = ["Mr", "Dr", "MS"];
     person.job = job;
 
-    print(dson.stringify(person).unwrap());
+    // print(dson.stringify(person).unwrap());
+
+    const payload1 = '{"title": "Engineer", "salary": 99}';
+    const payload2 = '{"first_name": "Brian", "last_name": "Downs", "age": 28, "job": {"title": "Principal Software Engineer", "salary": 10}, "titles": ["Mr", "Dr", "MS"]}';
+    const result1 = dson.parse(payload1, Job()).unwrap();
+    const result2 = dson.parse(payload2, Person()).unwrap();
+    print("Job.title: {}".format(result1.title));
+    print("Job.salary: {}".format(result1.salary));
+    print("First Name: {}".format(result2.firstName));
+    print("Job: {}".format(result2.job));
 
     System.exit(0);
 }
