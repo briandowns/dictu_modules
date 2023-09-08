@@ -11,39 +11,89 @@ const dictuTypes = ["number", "string", "set", "list", "dict"];
 class Dson {
     init() {}
 
-    parse(data) {}
+    // parse takes a string and a class instance, parses the string 
+    // containing the JSON into a dictionary, and attempts to map
+    // the fields to the given class with help from the class
+    // annotations.
+    parse(data, klass) {
+        if (type(data) != "string") {
+            return Error("data passed is not of type 'string'");
+        }
 
-    stringify(klass) {
+        var res = Object.createFrom(klass._name);
+        if (not res.success()) {
+            return res;
+        }
+        res = res.unwrap();
+
+        const parsed = JSON.parse(data);
+        if (not parsed.success()) {
+            return parsed;
+        }
+
+        const fields = klass.getAttributes()["fields"].filter(def(field) => field != "_name");
+        const fieldAnnotations = klass._class.fieldAnnotations;
+
+        fields.forEach(def(field) => {
+            var fieldName = "";
+
+            if (klass._class.fieldAnnotations != nil and fieldAnnotations.exists(field)) {
+                if (fieldAnnotations.get(field).exists(annotationName)) {
+                    fieldName = fieldAnnotations[field].get(annotationName);
+                    res.setAttribute(field, parsed.unwrap()[fieldName]);
+                }
+            } else {
+                fieldName = field;
+                res.setAttribute(fieldName, parsed.unwrap()[fieldName]);
+            }
+        });
+
+        return Success(res);
+    }
+
+    // processClass takes a class, parses the fields and annotations, parses the fields and 
+    // data info a dictionary and returns the results. If a field is determined to be a class,
+    // processClass will be called recursively on that type with the results being returned 
+    // and added to the top level dict.
+    private processClass(klass) {
         const fields = klass.getAttributes()["fields"].filter(def(field) => field != "_name");
         const fieldAnnotations = klass._class.fieldAnnotations;
 
         var data = {};
 
-        for (var i = 0; i < fields.len(); i += 1) {
-            if (fieldAnnotations.exists(fields[i])) {
-                if (fieldAnnotations[fields[i]].exists(annotationName)) {
-                    const fieldName = fieldAnnotations[fields[i]].get(annotationName);
-                    const fieldValue = klass.getAttribute(fields[i]);
-                    const fieldType = type(fieldValue);
+        fields.forEach(def(field) => {
+            const fieldValue = klass.getAttribute(field);
+            const fieldType = type(fieldValue);
+            var fieldName = "";
 
-                    if (dictuTypes.contains(fieldType)) {
-                        data[fieldName] = fieldValue;
-                    } else {
-                        data[fields[i]] = this.stringify(fieldValue).unwrap();
-                    }
+            if (klass._class.fieldAnnotations != nil and fieldAnnotations.exists(field)) {
+                if (fieldAnnotations.get(field).exists(annotationName)) {
+                    fieldName = fieldAnnotations[field].get(annotationName);
                 }
+            } else {
+                fieldName = field;
             }
-        }
 
-        return Success(data);
+            if (dictuTypes.contains(fieldType)) {
+                data[fieldName] = fieldValue;
+            } else {
+                data[fieldName] = this.processClass(fieldValue);
+            }
+        });
+
+        return data;
+    }
+
+    // stringify receives a class and returns a Result object
+    // that unwraps to a JSON encoded string.
+    stringify(klass) {
+        const data = this.processClass(klass);
+        return JSON.stringify(data);
     }
 }
 
 class Job {
-    @Json("title")
     var title = "";
-
-    @Json("salary")
     var salary = 0;
 
     init() {}
@@ -56,13 +106,8 @@ class Person {
     @Json("last_name")
     var lastName = "";
 
-    @Json("age")
     var age = 0;
-
-    @Json("titles")
     var titles = [];
-
-    @Json("job")
     var job = nil;
 
     init() {}
@@ -82,7 +127,16 @@ class Person {
     person.titles = ["Mr", "Dr", "MS"];
     person.job = job;
 
-    print(dson.stringify(person).unwrap());
+    // print(dson.stringify(person).unwrap());
+
+    const payload1 = '{"title": "Engineer", "salary": 99}';
+    const payload2 = '{"first_name": "Brian", "last_name": "Downs", "age": 28, "job": {"title": "Principal Software Engineer", "salary": 10}, "titles": ["Mr", "Dr", "MS"]}';
+    const result1 = dson.parse(payload1, Job()).unwrap();
+    const result2 = dson.parse(payload2, Person()).unwrap();
+    print("Job.title: {}".format(result1.title));
+    print("Job.salary: {}".format(result1.salary));
+    print("First Name: {}".format(result2.firstName));
+    print("Job: {}".format(result2.job));
 
     System.exit(0);
 }
