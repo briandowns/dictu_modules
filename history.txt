@@ -89,3 +89,7 @@ import Object;
 var "x";
 var x = "x";
 if (x.hasAttribute("x")) {}
+class A {}
+const a = A();
+a.getAttributes()["fields"];
+a.getAttributes()["fields"].filter(def(field) => field != "_name");

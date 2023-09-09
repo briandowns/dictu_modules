@@ -1,3 +1,6 @@
+// module dson is a Dictu module for JSON serialization and deserialization 
+// focusing its functionality around classes.
+
 import JSON;
 import Object;
 import System;
@@ -10,6 +13,15 @@ const dictuTypes = ["number", "string", "set", "list", "dict"];
 // from JSON to a given class.
 class Dson {
     init() {}
+
+    // classFields receives a class and returns a list of the 
+    // fields of the class. Even if no fields have been defined
+    // by the user, an empty list will be returned.
+    private classFields(klass) {
+        return klass
+            .getAttributes()["fields"]
+            .filter(def(field) => field != "_name");
+    }
 
     // parse takes a string and a class instance, parses the string 
     // containing the JSON into a dictionary, and attempts to map
@@ -31,7 +43,7 @@ class Dson {
             return parsed;
         }
 
-        const fields = klass.getAttributes()["fields"].filter(def(field) => field != "_name");
+        const fields = this.classFields(klass);
         const fieldAnnotations = klass._class.fieldAnnotations;
 
         fields.forEach(def(field) => {
@@ -56,7 +68,7 @@ class Dson {
     // processClass will be called recursively on that type with the results being returned 
     // and added to the top level dict.
     private processClass(klass) {
-        const fields = klass.getAttributes()["fields"].filter(def(field) => field != "_name");
+        const fields = this.classFields(klass);
         const fieldAnnotations = klass._class.fieldAnnotations;
 
         var data = {};
@@ -90,53 +102,4 @@ class Dson {
         const data = this.processClass(klass);
         return JSON.stringify(data);
     }
-}
-
-class Job {
-    var title = "";
-    var salary = 0;
-
-    init() {}
-}
-
-class Person {
-    @Json("first_name")
-    var firstName = "";
-
-    @Json("last_name")
-    var lastName = "";
-
-    var age = 0;
-    var titles = [];
-    var job = nil;
-
-    init() {}
-}
-
-{ // main
-    const dson = Dson();
-    
-    const job = Job();
-    job.title = "Principal Software Engineer";
-    job.salary = 10;
-
-    const person = Person();
-    person.firstName = "Brian";
-    person.lastName = "Downs";
-    person.age = 28;
-    person.titles = ["Mr", "Dr", "MS"];
-    person.job = job;
-
-    // print(dson.stringify(person).unwrap());
-
-    const payload1 = '{"title": "Engineer", "salary": 99}';
-    const payload2 = '{"first_name": "Brian", "last_name": "Downs", "age": 28, "job": {"title": "Principal Software Engineer", "salary": 10}, "titles": ["Mr", "Dr", "MS"]}';
-    const result1 = dson.parse(payload1, Job()).unwrap();
-    const result2 = dson.parse(payload2, Person()).unwrap();
-    print("Job.title: {}".format(result1.title));
-    print("Job.salary: {}".format(result1.salary));
-    print("First Name: {}".format(result2.firstName));
-    print("Job: {}".format(result2.job));
-
-    System.exit(0);
 }

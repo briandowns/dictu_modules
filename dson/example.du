@@ -1,0 +1,51 @@
+import "dson.du";
+
+
+class Job {
+    var title = "";
+    var salary = 0;
+
+    init() {}
+}
+
+class Person {
+    @Json("first_name")
+    var firstName = "";
+
+    @Json("last_name")
+    var lastName = "";
+
+    var age = 0;
+    var titles = [];
+    var job = nil;
+
+    init() {}
+}
+
+{ // main
+    const dson = Dson();
+    
+    const job = Job();
+    job.title = "Principal Software Engineer";
+    job.salary = 10;
+
+    const person = Person();
+    person.firstName = "Brian";
+    person.lastName = "Downs";
+    person.age = 28;
+    person.titles = ["Mr", "Dr", "MS"];
+    person.job = job;
+
+    print(dson.stringify(person).unwrap());
+
+    // const payload1 = '{"title": "Engineer", "salary": 99}';
+    // const payload2 = '{"first_name": "Brian", "last_name": "Downs", "age": 28, "job": {"title": "Principal Software Engineer", "salary": 10}, "titles": ["Mr", "Dr", "MS"]}';
+    // const result1 = dson.parse(payload1, Job()).unwrap();
+    // const result2 = dson.parse(payload2, Person()).unwrap();
+    // print("Job.title: {}".format(result1.title));
+    // print("Job.salary: {}".format(result1.salary));
+    // print("First Name: {}".format(result2.firstName));
+    // print("Job: {}".format(result2.job));
+
+    System.exit(0);
+}
