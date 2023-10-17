@@ -6,8 +6,14 @@ import Object;
 import System;
 
 
-const annotationName = "Json";
-const dictuTypes = ["number", "string", "set", "list", "dict"];
+const annotationName = "Json",
+      dictuTypes = [
+        "number",
+        "string",
+        "set",
+        "list",
+        "dict"
+    ];
 
 // Dson provides the ability to convert classes to JSON and 
 // from JSON to a given class.

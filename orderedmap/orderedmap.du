@@ -176,7 +176,7 @@ func (om *OrderedMap) getElements(keys ...interface{}) ([]*list.Element, error) 
 	elements := make([]*list.Element, len(keys))
 	for i, k := range keys {
 		pair, present := om.pairs[k]
-		if !present {
+		if not present {
 			return nil, &KeyNotFoundError{k}
 		}
 		elements[i] = pair.element
@@ -188,7 +188,7 @@ func (om *OrderedMap) getElements(keys ...interface{}) ([]*list.Element, error) 
 // Returns an error iff key is not present in the map.
 func (om *OrderedMap) MoveToBack(key interface{}) error {
 	pair, present := om.pairs[key]
-	if !present {
+	if not present {
 		return &KeyNotFoundError{key}
 	}
 	om.list.MoveToBack(pair.element)

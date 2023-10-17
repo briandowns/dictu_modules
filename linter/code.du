@@ -1,0 +1,7 @@
+import System;
+
+const c = 0;
+var v = 0;
+def f() {}
+
+var x = 0xa;
