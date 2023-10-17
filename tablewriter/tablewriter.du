@@ -1,0 +1,47 @@
+const
+	center  = "+",
+	row     = "-",
+	column  = "|",
+	space   = " ",
+	newline = "\n";
+
+class Table {
+    init(var headers=[]) {
+        this.maxColumnWidth = 0;
+        this.columnCount = 0;
+        this.columnsAndLength = 0;
+    }
+
+    writeHeader() {
+        if (this.headers.len() != 0) {
+            print(this.headers);
+        }
+    }
+
+    writeData() {
+        for (var i = 0; ) {}
+    }
+
+    write(data) {
+        this.data.forEach(def(row) => {
+
+        });
+
+        this.writeHeader();
+
+        if (data.len() == 0) {
+            return;
+        }
+
+        return Success(nil);
+    }
+}
+
+
+{ //
+    const columns = ["first", "last", "age"];
+    const data = [["John", "Smith", 30]];
+
+    const table = Table(columns);
+    table.write(data);
+}

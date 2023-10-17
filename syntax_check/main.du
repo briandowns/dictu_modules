@@ -1,0 +1,59 @@
+import System;
+
+from "../colorize/colorize.du" import Styles;
+
+abstract class Living {}
+
+/*
+ * this is a multi line comment 
+ */
+@Annotation
+class Person {
+    age = 0;
+
+    @Getter
+    @Setter
+    name = "";
+
+    init() {
+        this.age = 1;
+    }
+
+    @MethodAnnotation
+    getAge() {
+        return this.age;
+    }
+
+    private method() {}
+}
+
+{ // main
+    const p = Person();
+    if (not p) {
+        print("p is nil"); 
+    }
+
+    const l = [1, 1, 3, 4];
+    const d = {
+        "key": "value"
+    };
+    const s = (1, "2", 3);
+
+    switch(8) {
+        case 9:
+        case 1:
+        default:
+            System.exit(1);
+    }
+
+    const x = 10;
+
+    if (x < 100) {
+        print("less than");
+    } else {
+        print("not less than");
+    }
+
+    System.exit(0);
+}
+
