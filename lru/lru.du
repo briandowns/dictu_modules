@@ -2,21 +2,28 @@
 import System;
 
 class Entry {
-    private prev;
-    private next;
+    init() {
+        this.next = Entry();
+    }
 
-    init(var key, var value) {
-        this.prev = Entry("", "");
-        this.next = Entry("", "");
+    setKey(key) {
+        this.key = key;
+    }
+
+    setVal(val) {
+        this.val = val;
+    }
+
+    setNext(next) {
+        this.next = next;
+    }
+
+    setPrev(prev) {
+        this.prev = prev;
     }
 }
 
 class Cache {
-    private head;
-    private tail;
-    private entries;
-
-    // check size
     init(var size, onEvict) {
         this.onEvict = onEvict;
         this.head = nil;
@@ -31,7 +38,9 @@ class Cache {
     set(key, value) {
         var entry = this.entries.get(key);
         if (entry == nil) {
-            entry = Entry(key, value);
+            entry = Entry();
+            entry.setKey(key);
+            entry.setVal(value);
             this.entries[key] = entry;
 
             if (this.head == nil) {
@@ -94,13 +103,13 @@ class Cache {
             this.tail = this.tail.prev;
             this.tail.next = nil;
         } else {
-            entry.prev.next = entry.next;
-            entry.next.prev = entry.prev;
+            entry.prev.setNext(entry.next);
+            entry.next.setPrev(entry.prev);
         }
     }
 
     private promote(entry) {
-        if (this.head.key != entry.key) {
+        if (this.head != entry) {
             if (this.tail == entry) {
                 this.tail = this.tail.prev;
                 this.tail.next = nil;
@@ -108,8 +117,7 @@ class Cache {
                 entry.prev.next = entry.next;
                 entry.next.prev = entry.prev;
             }
-
-            //entry.prev = nil;
+            entry.prev = nil;
             entry.next = this.head;
             this.head.prev = entry;
             this.head = entry;
@@ -117,7 +125,8 @@ class Cache {
     }
 }
 
-{ // main
+// main
+{
     const userData = [
         {
             "id": 0,

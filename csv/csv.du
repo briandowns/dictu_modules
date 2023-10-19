@@ -1,0 +1,89 @@
+// Module csv provides functions to read and write data in CSV format.
+
+// Opts requires 1 argument, the path of the file to be parsed. 2 other
+// optional arguments are available. firstLineHeader (default: true) indicates
+// whether or not the first line of the file is a header, and delimiter 
+// (default: ",") which indicates the record delimiter.
+class Opts {
+    init(var path,
+        var firstLineHeader=false,
+        var delimiter=",",
+        var commentCharacter="#",
+        var startLine = 0) {}
+}
+
+// Parser opens the file in the given path, parses each line and record, and
+// saves them to a list and returns it.
+class Parser {
+    private columnCount;
+
+    init(var opts) {
+        this.opts = opts;
+    }
+
+    parse() {
+        if (this.opts.delimiter == this.opts.commentCharacter) {
+            return Error("delimiter and comment character aren't alowed to be the same");
+        }
+
+        var data = [];
+
+        with(this.opts.path, "r") {
+            var line;
+            var lineNum = 0;
+
+            while((line = file.readLine()) != nil) {
+                lineNum += 1;
+
+                if (lineNum == 1 and this.opts.firstLineHeader) {
+                    continue;
+                }
+
+                if (line.startsWith(this.opts.commentCharacter)) {
+                    continue;
+                }
+
+                var record = line.split(this.opts.delimiter);
+                this.columnCount = record.len();
+
+                for (var i = this.opts.startLine; i < record.len(); i += 1) {
+                    record[i] = record[i].strip();
+                }
+
+                data.push(record);
+            }
+        }
+
+        return Success(data);
+    }
+
+    // write
+    write(data) {
+        if (data == "") {
+            return Error("given data empty");
+        }
+
+        with(this.opts.path, "w") {
+
+        }
+
+        return Success(nil);
+    }
+
+    // writeAll
+    writeAll(data) {
+        if (data.len() == 0) {
+            return Error("given data empty");
+        }
+
+        with(this.opts.path, "w") {
+
+        }
+
+        return Success(nil);
+    }
+
+    getColumnCount() {
+        return this.columnCount;
+    }
+}

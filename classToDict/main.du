@@ -1,0 +1,31 @@
+import JSON;
+
+class A {
+    var afield = 44;
+
+    amethod() {}
+    abethodb() {}
+}
+
+class B < A {
+    const x = 9;
+    const y = 8;
+
+    var fieldA = 1;
+    var fieldB = 2;
+
+    init() {}
+
+    methodA() {}
+    methodB() {}
+
+    private methodC() {}
+    private methodD() {}
+}
+
+{
+    const b = B();
+    //print(b._class.toDict()["public_methods"]);
+    print(JSON.stringify(b._class.toDict()).unwrap());
+    print(B.toDict());
+}

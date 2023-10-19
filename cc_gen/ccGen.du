@@ -1,0 +1,271 @@
+
+
+// Company holds a short and long names of who has issued the credit card
+class Company {
+    init(var short, var long) {}
+}
+
+class Digits {
+    init(var number) {}
+
+    private len() {
+        return this.digits.len();
+    }
+
+    // at returns the digits from the start to the given length
+    at(idx) {
+        return this.digits[idx-1];
+    }
+}
+
+// Card holds generic information about the credit card
+class Card {
+    init(var number, var cvv, var m, var y, var company) {}
+
+    // lastFour returns the last four digits of the credit card's number
+    lastFour() {
+        if (this.number.len() < 4) {
+            return Success("");
+        } else {
+            return Error("credit card number is not long enough");
+        }
+
+        return Successs(this.number[this.number.len()-4:this.number.len()]);
+    }
+
+    // wipe returns the credit card with false/nullified/generic information
+    wipe() {
+        this.cvv = "0000";
+        this.number = "0000000000000000";
+        this.m = "01";
+        this.y = "1970";
+    }
+
+    // validateCvv validates the length of the card's CVV value
+    validateCvv() {
+        if (this.cvv.len() < 3 or this.cvv.len() > 4) {
+            return Error("invalid cvv");
+        }
+
+        return Success(nil);
+    }
+
+    // validate returns nil or an error describing why the credit card didn't validate
+    // this method checks for expiration date, CCV/CVV and the credit card's numbers.
+    // For allowing test cards to go through, simply pass true (bool) as the first argument
+    validate(allowTestNumber) {
+        var res = this.validateExpiration();
+        if (not res.success()) {
+            return res;
+        }
+
+        res = this.validateCvv();
+        if (not res.success()) {
+            return res;
+        }
+
+        switch (this.number) {
+            // test cards: https://stripe.com/docs/testing
+            case "4242424242424242",
+                "4012888888881881",
+                "4000056655665556",
+                "5555555555554444",
+                "5200828282828210",
+                "5105105105105100",
+                "378282246310005",
+                "371449635398431",
+                "6011111111111117",
+                "6011000990139424",
+                "30569309025904",
+                "38520000023237",
+                "3530111333300000",
+                "3566002020360505",
+                "4111111111111111",
+                "4916909992637469",
+                "4000111111111115",
+                "2223000048400011",
+                "6035227716427021": {
+                    if (allowTestNumber) {
+                        return Success(nil);
+                    }
+
+                    return Error("test numbers are not allowed");
+                }
+        }
+
+        if (not this.validateNumber()) {
+            return Error("invalid credit card number");
+        }
+
+        return Success(nil);
+    }
+
+    // ValidateNumber will check the credit card's number against the Luhn algorithm.
+    // Luhn algorithm: http://en.wikipedia.org/wiki/Luhn_algorithm
+    // TODO(briandowns): return descriptive errors
+    validateNumber() {
+        var sum = 0;
+        var alternate = false;
+
+        const numberLen = c.number.len();
+
+        if (numberLen < 13 or numberLen > 19) {
+            return false;
+        }
+
+        for (var i = numberLen-1; i > -1; i -= 1) {
+            var mod = this.number.toNumber();
+
+            if (alternate) {
+                mod *= 2;
+                if (mod > 9) {
+                    mod = (mod % 10) + 1;
+                }
+            }
+
+            alternate = not alternate;
+
+            sum += mod;
+        }
+
+        return sum % 10 == 0;
+    }
+
+    // method returns an error from MethodValidate() or returns the
+    // credit card with it's company / issuer attached to it
+    method() {
+        const res = this.methodValidate();
+        if (not res.success()) {
+            return res;
+        }
+
+        const company = res.unwrap();
+        this.company = company;
+
+        return Success(nil);
+    }
+
+    // methodValidate adds/checks/verifies the credit card's company / issuer
+    methodValidate() {
+        const numberLen = this.number.len();
+
+        var digits = Digits(this.number);
+
+        for (var i = 0; i < 6; i += 1) {
+            if (i < numberLen) {
+                digits.digits[i] = this.number[:i+1].toNumber();
+            }
+        }
+
+        if (isMasterCard(digits)) {
+            return Success(Company("mastercard", "MasterCard"));
+        }
+    }
+}
+
+def isMasterCard(digits) {
+	return isInBetween(digits.At(2), 51, 55) or isInBetween(digits.At(6), 222100, 272099);
+}
+
+def isInBetween(n, min, max) {
+	return n >= min and n <= max;
+}
+
+// func (c *Card) MethodValidate() (Company, error) {
+
+
+// 	switch {
+// 	case isAmex(ccDigits):
+// 		return Company{"amex", "American Express"}, nil
+// 	case isBankCard(ccDigits):
+// 		return Company{"bankcard", "Bankcard"}, nil
+// 	case isCabal(ccDigits):
+// 		return Company{"cabal", "Cabal"}, nil
+// 	case isUnionPay(ccDigits):
+// 		return Company{"china unionpay", "China UnionPay"}, nil
+// 	case isDinersClubCarteBlanche(ccDigits, ccLen):
+// 		return Company{"diners club carte blanche", "Diners Club Carte Blanche"}, nil
+// 	case isDinersClubEnroute(ccDigits):
+// 		return Company{"diners club enroute", "Diners Club enRoute"}, nil
+// 	case isDinersClubInternational(ccDigits, ccLen):
+// 		return Company{"diners club international", "Diners Club International"}, nil
+// 	case isDiscover(ccDigits):
+// 		return Company{"discover", "Discover"}, nil
+// 	// Elo must be checked before interpayment
+// 	case isElo(ccDigits):
+// 		return Company{"elo", "Elo"}, nil
+// 	case isHipercard(ccDigits):
+// 		return Company{"hipercard", "Hipercard"}, nil
+// 	case isInterpayment(ccDigits, ccLen):
+// 		return Company{"interpayment", "InterPayment"}, nil
+// 	case isInstapayment(ccDigits, ccLen):
+// 		return Company{"instapayment", "InstaPayment"}, nil
+// 	case isJCB(ccDigits):
+// 		return Company{"jcb", "JCB"}, nil
+// 	case isNaranja(ccDigits):
+// 		return Company{"naranja", "Naranja"}, nil
+// 	case isMaestro(c, ccDigits):
+// 		return Company{"maestro", "Maestro"}, nil
+// 	case isDankort(ccDigits):
+// 		return Company{"dankort", "Dankort"}, nil
+// 	case isMasterCard(ccDigits):
+// 		return Company{"mastercard", "MasterCard"}, nil
+// 	case isVisaElectron(ccDigits):
+// 		return Company{"visa electron", "Visa Electron"}, nil
+// 	case isVisa(ccDigits):
+// 		return Company{"visa", "Visa"}, nil
+// 	case isAura(ccDigits):
+// 		return Company{"aura", "Aura"}, nil
+// 	default:
+// 		return Company{"", ""}, errors.New("Unknown credit card method")
+// 	}
+// }
+
+// func matchesValue(number int, numbers []int) bool {
+// 	for _, v := range numbers {
+// 		if v == number {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
+
+
+
+// // validates the credit card's expiration date
+// func (c *Card) ValidateExpiration() error {
+// 	var year, month int
+// 	var err error
+// 	timeNow := timeNowCaller()
+
+// 	if len(c.Year) < 3 {
+// 		year, err = strconv.Atoi(strconv.Itoa(timeNow.UTC().Year())[:2] + c.Year)
+// 		if err != nil {
+// 			return errors.New("Invalid year")
+// 		}
+// 	} else {
+// 		year, err = strconv.Atoi(c.Year)
+// 		if err != nil {
+// 			return errors.New("Invalid year")
+// 		}
+// 	}
+
+// 	month, err = strconv.Atoi(c.Month)
+// 	if err != nil {
+// 		return errors.New("Invalid month")
+// 	}
+
+// 	if month < 1 || 12 < month {
+// 		return errors.New("Invalid month")
+// 	}
+
+// 	if year < timeNowCaller().UTC().Year() {
+// 		return errors.New("Credit card has expired")
+// 	}
+
+// 	if year == timeNowCaller().UTC().Year() && month < int(timeNowCaller().UTC().Month()) {
+// 		return errors.New("Credit card has expired")
+// 	}
+
+// 	return nil
+// }

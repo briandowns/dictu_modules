@@ -1,0 +1,208 @@
+class Optional {
+    /* Create an optional
+    initVal: a value, null or a function that returns a value
+    */
+    static of(initVal) {
+        if (type(initVal) == "function") {
+            return Optional.of(initVal.call());
+        }
+
+        if (initVal) {
+            return Some(initVal);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    /* Create an empty optional */
+    static empty() {
+        return None();
+    }
+
+    // |(other) {
+    //     return or(other);
+    // }
+
+    isEmpty() {
+        return not isPresent();
+    }
+}
+
+/* Class representing Optional with a value **/
+class Some < Optional {
+    init(initialValue) {
+        this._value = initialValue;
+    }
+
+    //value { _value }
+
+    isPresent() { 
+        return this._value != nil;
+    }
+
+    get() {
+        return this._value;
+    }
+
+    getOr(defaultValue) {
+    return this._value ? this._value : defaultValue;
+    }
+
+    /* >> */
+    map(mapFn) {
+        return Optional.of(mapFn.call(this._value));
+    }
+
+    /* >>= */
+    flatMap(flatMapFn) {
+        return flatMapFn.call(this._value);
+    }
+
+    filter(predicate) {
+        if(predicate.call(this._value)) {
+            return this;
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    toString() {
+        var valType = this._value ? "<" + this._value.type.name + ">" : "";
+        var valStr = this._value ? this._value.toString : "null";
+
+        return "Optional" + valType + "(" + valStr + ")";
+    }
+
+    toList() {
+        return this._value ? [this._value] : [];
+    }
+
+    each(consumerFn) {
+        consumerFn.call(this._value);
+        return this;
+    }
+
+    flatten() {
+        return (type(this._value) == Optional._name) ? this._value : this;
+    }
+
+    /** other: a value, other Optional or function to get new value **/
+    // or(other) {
+    //     return this;
+    // }
+
+    contains(someValue) {
+        if (type(someValue) == "function") {
+            return someValue.call(this._value);
+        }
+
+        return this._value == someValue;
+    }
+
+    euals(other) {
+        if (other.isEmpty()) {
+            return false;
+        }
+
+        return value == other.value;
+    }
+
+    plus(other) {
+        if (other.isEmpty()) {
+            return this;
+        }
+
+        return Optional.of(value + other.value);
+    }
+
+    count() {
+        return this._value ? 1 : 0;
+    }
+}
+
+/* Class representingn an empty Optional - without a value **/
+class None < Optional {
+    isPresent() { 
+        return false;
+    }
+
+    getOr(defaultValue) {
+        return defaultValue;
+    }
+
+    map(mapFn) {
+        return this;
+    }
+
+    flatMap(flatMapFn) {
+        return this;
+    }
+
+    flatten() {
+        return this;
+    }
+
+    filter(predicate) {
+        return this;
+    }
+
+    toString() {
+        return "Optional<Empty>()";
+    }
+
+    each(consumer) {
+        return this;
+    }
+
+    toList() {
+        return [];
+    }
+
+    count() {
+        return 0;
+    }
+
+    Or(other) {
+        if (type(other) == Optional._name) {
+            return other;
+        } else if (type(other) == "function") {
+            return Optional.of(other.call());
+        } else {
+            return Optional.of(other);
+        }
+    }
+
+    contains(someValue) {
+        return false;
+    }
+
+    equals(other) {
+        return other.isEmpty();
+    }
+
+    plus(other) {
+        return other.isEmpty() ? this : other;
+    }
+}
+
+// main
+{
+    var maybe = Optional.of("abc"); // Optional<String>("abc")
+    maybe.isPresent(); // true
+    maybe.each(def(value) => { print(value); }); // prints "abc"
+
+    var maybe2 = maybe.map(def(str) => { str + "123"; }); // Optional<String>("abc123")
+
+    var none = Optional.empty(); // Optional<Empty>()
+    System.print(none.getOr("defaultValue")); // "defaultValue"
+
+    // pick one of three optionals - first which is not empty
+    //var maybe3 = maybeThis | orThis | maybe2 // Optional<String>("abc123")
+
+    var res = Optional.of(request.param).filter(def(v) => { v.count > 0; }).map(def(v) => { v.trim(); }); // request param without spaces
+
+    var combined = Optional.of(1) + Optional.of(2); // Optional(3)
+
+    var reqParam = combined.flatMap(def(value) => { Optional.of(value + 100); });  // Optional(103)
+    print(reqParam.contains(103)); // true
+}

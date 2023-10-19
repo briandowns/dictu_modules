@@ -1,0 +1,53 @@
+/**
+ * linked_list.du
+ *
+ * Testing Linked List implementation.
+ */
+from UnitTest import UnitTest;
+from "linked_list.du" import LinkedList;
+
+class TestLinkedList < UnitTest {
+    testEmptyInit() {
+        const ll = LinkedList();
+
+        this.assertTruthy(ll.isEmpty());
+        ll.insert("a");
+        this.assertFalsey(ll.isEmpty());
+        this.assertEquals(ll.getCount(), 1);
+    }
+
+    testEmptyInit() {
+        const ll = LinkedList("b");
+
+        this.assertFalsey(ll.isEmpty());
+        this.assertEquals(ll.getCount(), 1);
+        ll.insert("c");
+        this.assertFalsey(ll.isEmpty());
+        this.assertEquals(ll.getCount(), 2);
+    }
+
+    testFind() {
+        const ll = LinkedList();
+
+        ll.insert("d");
+
+        const val = ll.find("d");
+        this.assertNotNil(val);
+
+        const val2 = ll.find("e");
+        this.assertNil(val2);
+    }
+
+    testRemove() {
+        const ll = LinkedList();
+
+        ll.insert("f");
+        this.assertEquals(ll.getCount(), 1);
+        ll.remove("f");
+        this.assertEquals(ll.getCount(), 0);
+        const val = ll.find("f");
+        this.assertNil(val);
+    }
+}
+
+TestLinkedList().run();

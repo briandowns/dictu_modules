@@ -1,0 +1,9 @@
+{
+    var l = newList(20);
+    //print("Len: {},  Data: {}".format(l.len(), l));
+    print("XXX - here 1");
+    for (var i = 0; i < 100; i += 1) {
+        l.push(i);
+    }
+    print("XXX - here 2");
+}

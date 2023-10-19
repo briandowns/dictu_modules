@@ -16,13 +16,13 @@ class Server {
     init(var server, var port) {}
 }
 
-const backendServers = [
-    Server("127.0.0.1", 10001),
-    Server("127.0.0.1", 10002),
-    Server("127.0.0.1", 10003)
-];
-
 def selectServer() {
+    const backendServers = [
+        Server("127.0.0.1", 10001),
+        Server("127.0.0.1", 10002),
+        Server("127.0.0.1", 10003)
+    ];
+
     const i = Random.range(0, backendServers.len()-1);
     return backendServers[i];
 }
@@ -33,11 +33,12 @@ def selectServer() {
 
     log.println("Starting proxy server...");
 
-    var res = Socket.create(Socket.AF_INET, Socket.SOCK_STREAM);
-    if (not res.success()) {
-        log.fatalln(res.unwrapError());
-    }
-    var socket = res.unwrap();
+    var socket = Socket.create(Socket.AF_INET, Socket.SOCK_STREAM).match(
+        def(result) => result, 
+        def(error) => {
+            log.fatalln(res.unwrapError());
+        }
+    );
     
     res = socket.setsockopt(Socket.SOL_SOCKET, Socket.SO_REUSEADDR);
     if (not res.success()) {

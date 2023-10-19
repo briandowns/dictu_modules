@@ -1,0 +1,52 @@
+/** Fibers API 1 **/
+
+import Process;
+
+
+class Fiber {
+    private enum(
+        notStarted,
+        running,
+        complete
+    );
+
+    init() {
+
+    }
+
+    call() {}
+
+    isDone() {}
+
+    run() {
+
+    }
+
+    yeild() {
+
+    }
+
+    abort(message) {
+        print(message);
+        System.exit(1);
+    }
+
+    suspend() {}
+
+    try() {}
+
+    transfer() {}
+}
+
+class Worker < Fiber {
+    init() {
+        super.init();
+    }
+}
+
+{ // main
+    const w = Worker();
+    worker.run();
+}
+
+

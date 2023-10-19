@@ -1,40 +1,73 @@
 import System;
 
-// Colors
-const Black   = 30;
-const Red     = 31;
-const Green   = 32;
-const Yellow  = 33;
-const Blue    = 34;
-const Magenta = 35;
-const Cyan    = 36;
-const White   = 37;
-const Grey    = 90;
 
-// Background Colors
-const Blackbg   = 40;
-const Redbg     = 41;
-const Greenbg   = 42;
-const Yellowbg  = 43;
-const Bluebg    = 44;
-const Magentabg = 45;
-const Cyanbg    = 46;
-const Whitebg   = 47;
+const escape = "\x1b";
 
 // Style
-const Bold      = 1;
-const Dim       = 2;
-const Italic    = 3;
-const Underline = 4;
-const Blinkslow = 5;
-const Blinkfast = 6;
-const Inverse   = 7;
-const Hidden    = 8;
-const Strikeout = 9;
+enum Styles {
+    Reset     = 0,
+    Bold      = 1,
+    Dim       = 2,
+    Italic    = 3,
+    Underline = 4,
+    BlinkSlow = 5,
+    BlinkFast = 6,
+    Inverse   = 7,
+    Hidden    = 8,
+    Strikeout = 9
+}
+
+// TextColors
+enum TextColors {
+    Black   = 30,
+    Red     = 31,
+    Green   = 32,
+    Yellow  = 33,
+    Blue    = 34,
+    Magenta = 35,
+    Cyan    = 36,
+    White   = 37,
+    Grey    = 90
+}
+
+// BackgroundColors
+enum BackgroundColors {
+    Black   = 40,
+    Red     = 41,
+    Green   = 42,
+    Yellow  = 43,
+    Blue    = 44,
+    Magenta = 45,
+    Cyan    = 46,
+    White   = 47
+}
+
+enum HighIntensityTextColors {
+	FgHiBlack    = 90,
+	FgHiRed      = 91,
+	FgHiGreen    = 92,
+	FgHiYellow   = 93,
+	FgHiBlue     = 94,
+	FgHiMagenta  = 95,
+	FgHiCyan     = 96,
+	FgHiWhite    = 97
+}
+
+enum HighIntensityBackgroundColors {
+    Black   = 100,
+	Red     = 101,
+	Green   = 102,
+	Yellow  = 103,
+	Blue    = 104,
+	Magenta = 105,
+	Cyan    = 106,
+	White   = 107
+}
 
 def colorize(str, ...style) {
     var s = "\x1b[";
     var l = style.len();
+
     if (style.len() > 0) {
         for (var k = 0; k < style.len(); k+=1) {
             s += style[k].toString();
@@ -44,5 +77,55 @@ def colorize(str, ...style) {
         }
         s += "m";
     }
+
     return '{}{}\x1b[0m'.format(s, str);
+}
+
+def printRed(s) {
+    print("{}[1;{}m{}".format(escape, TextColors.Red, s));
+}
+
+def printRedWithStyle1(s, style) {
+    if (style < 0 or style > 9) {
+        print("{}[1;{};{}m{}".format(escape, TextColors.Red, style, s));   
+    }
+
+    print("{}[1;{}m{}".format(escape, TextColors.Red, s));
+}
+
+// "\e[1;31;42m Yes it is awful \e[0m"
+// def printWithStyle2(s, ...style) {
+//     if (style.len() > 0) {
+//         print("{}[1;{};{};{}m{}".format(escape, style[0], style[1], style[2], s));
+//         return;
+//     }
+
+//     print("{}[1;{}m{}".format(escape, TextColors.Red, s));
+// }
+
+def printWithStyle2(s, ...colorFormat) {
+    var formatted = "{}[1;";
+    if (colorFormat.len() > 0) {
+        formatted += "{};".repeat(colorFormat.len());
+        formatted += "m{}";
+        print(formatted.format(escape, s, ...colorFormat));
+        return;
+    }
+
+    // print("{}[1;{}m{}".format(escape, TextColors.Red, s));
+}
+
+def colorPrint(output, color, background=BackgroundColors.Black, style=Styles.Reset) {
+    // "\x1b[1;31;40;0mHello!!!!!"
+    print("{}[1;{};{};{}m{}".format(escape, color, background, style, output));
+}
+
+{ // main
+    // printRed("Hello, world!");
+    // printWithStyle2("Hello, world!", TextColors.Red, BackgroundColors.White, Styles.Italic);
+    // print("Hello, world!");
+    // print("Hello, world!");
+    colorPrint("Hello, world!", TextColors.Blue);
+
+    System.exit(0);
 }

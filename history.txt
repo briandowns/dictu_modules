@@ -1,8 +1,3 @@
-class A{}
-class B{}
-const a = A();
-const b = B();
-a==b
 a==b;
 class A{}
 class B{}
@@ -26,3 +21,80 @@ Datetime.strptime("%c", "Fri, 09 Dec 2022 05:35:12 GMT");
 Datetime.strptime("%c GMT", "Fri, 09 Dec 2022 05:35:12 GMT");
 Datetime.strptime("%a, %d %b %Y %H:%M:%S GMT", "Fri, 09 Dec 2022 05:35:12 GMT");
 Datetime.strptime("%a, %d %b %Y %H:%M:%S %Z", "Fri, 09 Dec 2022 05:35:12 GMT");
+def x() {}
+type(x)
+type(x);
+import term;
+import Term;
+print(Term.getSize());
+const d = {(1, 2, 3): 1234};
+const s = (1,2,3);
+const d = {set(1, 2, 3): 1234};
+print(9) if true else print(5);
+print(9) if (true) else print(5);
+print(9) if (true) else {print(5)};
+print(9) if (true) {} else {print(5)};
+class C {init(){}}
+const a = C();
+class Cache { init(){} }
+var c1 = Cache();
+var c2 = Cache();
+print(c1 == c2);
+print(c1 == c1);
+class Cache { private cache = nil; init(){} }
+class Cache { private cache; = nil; init(){} }
+class Cache { cache = nil; init(){} }
+const l = [1,2,3,4,5,6,7,8,9,0];
+l.toString();
+print(l.toString());
+l.join("");
+const x = 0;
+var x;
+x = 9;
+import System, Env;
+const x = 0;
+var x;
+x = 9;
+import "C";
+import C;
+class C {}
+const c = C();
+{const c = C();}
+def f() { ```sh}
+>>> class C {}
+>>> const c = C();
+Error: File 'repl', line 1
+       'module' is not callable
+class C {}
+def f() { const c = C();  }
+f()
+f();
+def f() { var c = C();  }
+f();
+var c = 0;
+print(c);
+const C = 90;
+print(C);
+var C = 90;
+print(C);
+class A {}
+const a = A();
+type(a);
+import Object;
+var "x";
+var x = "x";
+if (x.hasAttribute("x")) {}
+class A {}
+const a = A();
+a.getAttributes()["fields"];
+a.getAttributes()["fields"].filter(def(field) => field != "_name");
+class A {
+    init() {
+        this.y = A();
+    }
+}
+const a = A();
+var l = [1, 2, 3, 4, 5, 6, 7 ,8, 9];
+l[3:7];
+var s = "asdf";
+s[0];

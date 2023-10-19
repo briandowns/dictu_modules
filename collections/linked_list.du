@@ -1,0 +1,103 @@
+class Node {
+    private next;
+
+    init(private val) {}
+
+    getData() {
+        return this.val;
+    }
+
+    setData(val) {
+        this.val = val;
+    }
+
+    getNext() {
+        return this.next;
+    }
+
+    setNext(next) {
+        this.next = next;
+    }
+}
+
+class LinkedList {
+    private count;
+
+    init(private head=nil) {
+        this.count = 0;
+        
+        if (head != nil) {
+            this.head = head;
+            this.count = 1;
+        }
+    }
+
+    // Create a new node at the Head of the Linked List
+    insert(data) {
+        const newNode = Node(data);
+
+        newNode.setNext(this.head);
+        this.head = newNode;
+        this.count += 1;
+    }
+
+    // Search for item in Linked List with data = val
+    // Time complexity is O(n) as in worst case scenario
+    // have to iterate over whole Linked List
+    find(val) {
+        var item = this.head;
+
+        while (item != nil) {
+            if (item.getData() == val) {
+                return item;
+            } else {
+                item = item.getNext();
+            }
+        }
+
+        return nil;
+    }
+
+    // Remove Node with value equal to item
+    // Time complexity is O(n) as in the worst case we have to 
+    // iterate over the whole linked list
+    remove(item) {
+        var current = this.head;
+        var previous = nil;
+
+        while (current != nil) {
+            if (current.getData() == item) {
+                break;
+            }
+
+            previous = current;
+            current = current.getNext();
+        }
+
+        if (current == nil) {
+            return Error("{} is not in the list".format(item));
+        }
+
+        if (previous == nil) {
+            this.head = current.getNext();
+            this.count -= 1;
+        } else {
+            previous.setNext(current.getNext());
+            this.count -= 1;
+        }
+
+        return nil;
+    }
+
+    // Return the length of the Linked List
+    // Time complexity O(1) as only returning a single value
+    getCount() {
+        return this.count;
+    }
+
+    // Returns whether the Linked List is empty or not
+    // Time complexity O(1) as only returns True or False
+    isEmpty() {
+        return this.head == nil;
+    }
+}

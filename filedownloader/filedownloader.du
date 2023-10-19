@@ -1,3 +1,5 @@
+#!/usr/bin/env dictu
+
 import HTTP;
 import System;
 
@@ -5,7 +7,7 @@ import System;
     const opts = {
         "timeout": 20,
         "headers": [
-            "User-Agent: Dictu-OWM-Client"
+            "User-Agent: Dictu"
         ],
         "insecure": true,
         "follow-redirects": true
@@ -15,12 +17,9 @@ import System;
 
     const res = client.get("https://curl.se/download/curl-7.86.0.zip");
     const result = res.unwrap();
-    result.headers.forEach(def(header) => print(header));
-    print("{}".format(result.content.len()));
-    with("curl-7.86.0.zip", "w") {
-        for (var i = 0; i < result.content.len(); i += 1) {
-            file.write(result.content[i]);
-        }
+
+    with("curl-7.86.0.zip", "wb") {
+        file.write(result.content);
     }
 
     System.exit(0);

@@ -1,0 +1,26 @@
+#!/usr/bin/env dictu
+
+import System;
+
+from "collections.du" import OrderedDict;
+
+
+// main
+{
+    var od = OrderedDict();
+    
+    od.set("Brian", 42);
+    od.set("Jess", 40);
+    od.set("Kyra", 39);
+    od.set("Ryan", 43);
+
+    print(od.get("Kyra"));
+    print(od.size());
+    print(od.firstKey());
+    print(od.lastKey());
+
+    var od2 = od.clone();
+    print(od2.size());
+
+    System.exit(0);
+}

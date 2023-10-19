@@ -1,0 +1,9 @@
+import HTTP;
+import System;
+
+// main
+{
+    var store = {};
+    
+    System.exit(0);
+}

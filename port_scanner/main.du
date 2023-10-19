@@ -1,0 +1,28 @@
+#!/usr/bin/env dictu
+
+import Socket;
+import System;
+
+from Argparse import Parser;
+
+// main
+{
+    var socket = Socket.create(Socket.AF_INET, Socket.SOCK_STREAM).match(
+        def(result) => result, 
+        def(error) => {
+            log.fatalln(res.unwrapError());
+        }
+    );
+    
+    res = socket.setsockopt(Socket.SOL_SOCKET, Socket.SO_REUSEADDR);
+    if (not res.success()) {
+        log.fatalln(res.unwrapError());
+    }
+
+    res = socket.bind("127.0.0.1", 10000);
+    if (not res.success()) {
+        log.fatalln(res.unwrapError());
+    }
+
+    System.exit(0);
+}
