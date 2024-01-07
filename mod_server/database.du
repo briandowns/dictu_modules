@@ -1,0 +1,20 @@
+import "kahless/kahless.du" as kahless;
+
+
+@Table("MODULES")
+class Module < kahless.Model {
+    var name = "";
+    var version = "";
+    var url = "";
+    var method = "";
+    //var dependencies = [];
+}
+
+@Table("DEPENDENCY")
+class Dependency < kahless.Model {}
+
+@Table("MAINTAINERS")
+class Maintainer < kahless.Model {
+    var name = "";
+    var email = "";
+}

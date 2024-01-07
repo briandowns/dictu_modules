@@ -3,7 +3,7 @@ import System;
 
 class Entry {
     init() {
-        this.next = Entry();
+        this.next = nil;
     }
 
     setKey(key) {

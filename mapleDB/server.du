@@ -1,0 +1,90 @@
+#!/usr/bin/env dictu
+
+import Log;
+import Socket;
+import System;
+
+import "maple.du" as maple;
+from "db.du" import DB;
+
+const invalidCmd = "-Error invalid command" + maple.crlf,
+      unknownCmd = "-Error unknown command" + maple.crlf;
+
+{ // main
+    var socket = Socket.create(Socket.AF_INET, Socket.SOCK_STREAM).match(
+        def(result) => result, 
+        def(error) => {
+            Log.fatalln(res.unwrapError());
+        }
+    );
+    
+    var res = socket.setsockopt(Socket.SOL_SOCKET, Socket.SO_REUSEADDR);
+    if (not res.success()) {
+        Log.fatalln(res.unwrapError());
+    }
+
+    res = socket.bind("127.0.0.1", 10000);
+    if (not res.success()) {
+        Log.fatalln(res.unwrapError());
+    }
+
+    res = socket.listen(10000);
+    if (not res.success()) {
+        Log.fatalln(res.unwrapError());
+    }
+
+    var [client, address] = socket.accept().unwrap();
+
+    const db = DB("cache.db");
+
+    while {
+        var payload = client.recv(maple.readBuffer);
+        if (not payload.success()) {
+            Log.println(payload.unwrapError());
+            break;
+        }
+        var userInput = payload.unwrap();
+
+        userInput = userInput.replace(maple.crlf, "");
+        const preprocessed = userInput.split(" ");
+
+        const cmd = preprocessed[0];
+
+        switch (cmd) {
+            case maple.getCmd: {
+                if (preprocessed.len() != 2) {
+                    client.write(invalidCmd);
+                    client.close();
+                    break;
+                }
+                const res = "{}{}".format(db.get(preprocessed[1]), maple.crlf);
+                client.write(res);
+            }
+            case maple.setCmd: {
+                if (preprocessed.len() != 3) {
+                    client.write(invalidCmd);
+                    client.close();
+                    break;
+                }
+                
+                db.set(preprocessed[1], preprocessed[2]);
+                client.write("OK" + maple.crlf);
+            }
+            case maple.delCmd: {
+                if (preprocessed.len() != 2) {
+                    client.write(invalidCmd);
+                    client.close();
+                    break;
+                }
+
+                db.del(preprocessed[1]);
+                client.write("OK" + maple.crlf);
+            }
+        }
+    }
+
+    socket.close();
+    db.close();
+
+    System.exit(0);
+}

@@ -1,0 +1,11 @@
+{
+    "debug": false,
+    "database": {
+        "type": "sqlite",
+        "name": "dmi.db"
+    },
+    "http": {
+        "port": 8080,
+        "token": "asdf"
+    }
+}

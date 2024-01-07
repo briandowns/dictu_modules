@@ -1,0 +1,21 @@
+#!/usr/bin/env dictu
+
+import System;
+
+from "client.du" import Client;
+
+
+{ // 
+    const client = Client("127.0.0.1", 10000);
+    client.connect();
+
+    client.set("first_name", "Brian");
+    client.set("last_name", "Downs");
+    client.set("age", 43);
+
+    client.get("first_name");
+
+    client.del("first_name");
+
+    System.exit(0);
+}

@@ -1,0 +1,69 @@
+import System;
+
+trait MetricBehavior {
+    getVal() {
+        return this.val;
+    }
+
+    add(n) {
+        if (n > 0) {
+            this.val += n;
+        }
+    }
+    
+    inc() {
+        this.val += 1;
+    }
+}
+
+class AbstractBase {
+    init() {
+        this.val = 0;
+        this.labels = [];
+        this.createdAt = System.time();
+    }
+}
+
+class Counter < AbstractBase {
+    use MetricBehavior;
+
+    init(var name, labels=[]) {
+        super.init();
+
+        this.labels = labels;
+    }
+}
+
+class Gauge < AbstractBase {
+    use MetricBehavior;
+
+    init(var name, labels=[]) {
+        super.init();
+
+        this.labels = labels;
+    }
+
+    dec() {
+        this.val -= 1;
+    }
+}
+
+{ // main
+    const counter = Counter("page_hits");
+
+    counter.add(10);
+    print(counter.getVal());
+    counter.inc();
+    print(counter.getVal());
+
+    const gauge = Gauge("page_hits");
+
+    gauge.add(10);
+    print(gauge.getVal());
+    gauge.inc();
+    print(gauge.getVal());
+    gauge.dec();
+    print(gauge.getVal());
+
+    System.exit(0);
+}
