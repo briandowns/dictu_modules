@@ -1,0 +1,18 @@
+const vowels = [
+    "a", "à", "á", "â", "ä", "æ", "ã", "å", "ā",
+    "e", "è", "é", "ê", "ë", "ē", "ė", "ę",
+    "i", "î", "ï", "í", "ī", "į", "ì",
+    "o", "ô", "ö", "ò", "ó", "œ", "ø", "ō", "õ",
+    "u", "û", "ü", "ù", "ú", "ū"
+];
+
+/**
+ * isVowel returns a boolean if the given string is a vwel.
+ **/
+def isVowel(s) {
+    return vowels.contains(s) ? true : false;
+}
+
+{
+    print(isVowel("t"));
+}

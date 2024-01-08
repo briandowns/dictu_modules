@@ -1,0 +1,62 @@
+import Random;
+
+
+/**
+ * rety
+ */
+def rety(f, retries) {
+    var tried = 0;
+
+    while (true) {
+        const res = f();
+        if (not res.success()) {
+            if (tried == retries) {
+                return res;
+            }
+
+            tried += 1;
+
+            continue;
+        }
+
+        return res;        
+    }
+}
+
+/**
+ * retryWithExponentialBackoff
+ */
+def retryWithExponentialBackoff(f, retries, backoff) {
+    var tried = 0;
+
+    while (true) {
+        const res = f();
+        if (not res.success()) {
+            if (tried == retries) {
+                return res;
+            }
+
+            const sleep = (backoff * 2**tried + Random.range(0, 1));
+            System.sleep(sleep);
+            tried += 1;
+
+            continue;
+        }
+
+        return res;
+    }
+}
+
+{
+    retryWithBackoff(testFunction2, 5, 1).match(
+        def(result)=> {
+            print(result);
+        },
+        def(error) => {
+            print(error);
+            System.exit(1);
+        }
+    );
+
+    System.exit(0);
+}
