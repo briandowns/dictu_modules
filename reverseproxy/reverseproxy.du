@@ -10,6 +10,7 @@ import Random;
 import Socket;
 import System;
 
+
 const readBuffer = 2048;
 
 class Server {
@@ -95,6 +96,7 @@ def selectServer() {
             break;
         }
     }
+    
     remote.close();
     socket.close();
 

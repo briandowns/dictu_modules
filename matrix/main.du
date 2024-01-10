@@ -1,0 +1,69 @@
+import Random;
+import System;
+import Term;
+
+
+const
+    blackChar = " ",
+    clearChart = "\x1b[H";
+
+const
+    dropStateNone = 0,
+    dropStateFront = 1,
+    dropStateTail = 2;
+
+const
+    minDropLen = 5,
+    maxDropLen = 12;
+
+const dropColors = [
+    "\x1b[38;5;48m",
+    "\x1b[38;5;41m",
+    "\x1b[38;5;35m",
+    "\x1b[38;5;238m"
+];
+
+const charSet = [
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 
+    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 
+    'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 
+    'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 
+    'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 
+    'Y', 'Z', '!', '@', '#', '$', '%', '&', '*'
+];
+
+const
+    frontClr = "\x1b[38;5;231m",
+    totalClrs = dropColors.len();
+
+class Matrix {
+    init(wait, glitchFreq, dropFreq) {
+        this.rows = 0;
+        this.columns = 0;
+
+        this.wait = 0.06 / (wait / 100);
+        this.glitchFreq = 0.01 / (glitchFreq / 100);
+        this.dropFreq = 0.1 * (dropFreq / 100);
+    }
+
+    static promptSize() {
+        const terminalSize = Term.getSize();
+        return {
+            "rows": terminalSize.get("rows") + maxDropLen, 
+            "columns": terminalSize.get("columns")
+        };
+    }
+
+    static randomChar() {
+        return Random.range(0, charSet.len());
+    }
+
+    start() {}
+}
+
+{ // main
+    const matrix = Matrix(100, 100, 100);
+
+    System.exit(0);
+}

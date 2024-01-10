@@ -1,0 +1,33 @@
+/**
+ * CollapseSpaces removes leading and trailing spaces and reduces 
+ * any runs of two or more spaces to a single space.
+ */
+def collapseSpaces(s) {
+    var out = "";
+    var lastSpace = false;
+
+    for (var i = 0; i < s.len(); i += 1) {
+        if (s[i] == " ") {
+            if (not lastSpace) {
+                if (i != 0) {
+                    out += " ";
+                }
+                lastSpace = true;
+            }
+        } else {
+            out += s[i];
+            lastSpace = false;
+        }
+    }
+
+    if (lastSpace and s.len() > 0) {
+        out += out[:out.len()-1];
+    }
+
+    return out;
+}
+
+{
+    const str = "This  is      a huge string of a       lot of spaces.";
+    print(collapseSpaces(str));
+}

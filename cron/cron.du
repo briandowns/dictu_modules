@@ -1,0 +1,29 @@
+
+
+"@annually" "0 0 0 1 1 *"  // Run once a year at midnight in the morning of January 1                 
+"@yearly"   "0 0 0 1 1 *"  // Run once a year at midnight in the morning of January 1                 
+"@monthly"  "0 0 0 1 * *"  // Run once a month at midnight in the morning of the first of the month   
+"@weekly"   "0 0 0 * * 0"  // Run once a week at midnight in the morning of Sunday                    
+"@daily"    "0 0 0 * * *"  // Run once a day at midnight                                              
+"@hourly"   "0 0 * * * *"  // Run once an hour at the beginning of the hour                           
+"@minutely" "0 * * * * *"  // Run once a minute at the beginning of minute                            
+"@secondly" "* * * * * * *" // Run once every second                                                   
+"@reboot"     Not supported
+
+def parse(spec) {
+    if (spec == "") {
+        return Error("empty cron spec");
+    }
+    if (spec[0] == "@") {
+        // process @
+    }
+
+    const intermediate = spec.split(" ");
+    
+    print();
+}
+
+{ // main
+
+
+}

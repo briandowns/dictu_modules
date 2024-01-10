@@ -1,0 +1,24 @@
+#!/usr/bin/env dictu
+
+import System;
+
+
+// copy
+def copy(src, dst) {
+    with(src, "r") {
+        const srcFd = file;
+
+        with(dst, "wb") {
+            const dstFd = file;
+
+            return dstFd.write(srcFd.read());
+        }
+    }
+}
+
+{
+    const ret = copy("test1", "test2");
+    print(ret);
+
+    System.exit(0);
+}

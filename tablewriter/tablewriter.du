@@ -1,3 +1,5 @@
+// module tablewriter provides an easy means of writing table
+// formatted data.
 const
 	center  = "+",
 	row     = "-",
@@ -6,9 +8,11 @@ const
 	newline = "\n";
 
 class Table {
+    var columnCount = 0;
+
     init(var headers=[]) {
         this.maxColumnWidth = 0;
-        this.columnCount = 0;
+        this.columnCount = headers.len();
         this.columnsAndLength = 0;
     }
 
@@ -18,16 +22,19 @@ class Table {
         }
     }
 
-    writeData() {
-        for (var i = 0; ) {}
+    validateData() {
+        if (data.len() != this.columnCount) {
+            return Error("");
+        }
     }
 
     write(data) {
-        this.data.forEach(def(row) => {
-
+        data.forEach(def(row) => {
+            print("{} {} {}".format(row[0], row[1], row[2]));
+            // row.forEach(def(entry) => {
+            //     print("{}\b".format(entry));
+            // });
         });
-
-        this.writeHeader();
 
         if (data.len() == 0) {
             return;
@@ -38,7 +45,7 @@ class Table {
 }
 
 
-{ //
+{ // main
     const columns = ["first", "last", "age"];
     const data = [["John", "Smith", 30]];
 

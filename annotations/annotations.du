@@ -1,0 +1,13 @@
+
+
+class Person {
+    init() {}
+
+    @Something("asdf")
+    getAge() {}
+
+    @Meh([1, 2, 4])
+    getName() {}
+}
+
+const p = Person();

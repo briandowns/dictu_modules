@@ -1,0 +1,22 @@
+const romanValues = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1],
+      romanText = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
+
+def numberToRomanNumber(num) {
+    var rn = "";
+
+    while (num > 0) {
+        for (var i = 0; i < romanValues.len(); i += 1) {
+            if (num >= romanValues[i]) {
+                rn += romanText[i];
+                num -= 1;
+                break;
+            }
+        }
+    }
+
+    return rn;
+}
+
+{
+    print(numberToRomanNumber(11));
+}

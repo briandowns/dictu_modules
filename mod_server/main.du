@@ -1,0 +1,88 @@
+#!/usr/bin/env dictu
+
+import HTTP;
+import JSON;
+import System;
+
+from Argparse import Parser;
+
+import "database.du" as database;
+import "api.du" as api;
+import "kahless/kahless.du" as kahless;
+from "wanbli/middleware/auth.du" import TokenAuth;
+from "wanbli/wanbli.du" import Wanbli, JsonResponse, ErrorResponse;
+from "slog/slog.du" import Log;
+
+/**
+ * parseConfig parses the given config file
+ * into a JSON dict.
+ */
+def parseConfig(configFile) {
+    var res;
+    with(configFile, "r") {
+        res = JSON.parse(file.read());
+        if (not res.success()) {
+            return res;
+        }
+    }
+
+    return res.unwrap();
+}
+
+{ // main
+    const parser = Parser("dmi", "Dictu Module Index");
+    parser.addString("-c", "config file", true);
+
+    const args = parser.parse().match(
+        def (result) => result,
+        def (error) => {
+            print(error);
+            System.exit(1);
+        }
+    );
+
+    const logger = Log();
+
+    const config = parseConfig(args.c);
+
+    logger.info("Starting dmi");
+
+    const kc = kahless.Config(config.get("database").get("type"), config.get("database").get("name"));
+    const db = kahless.Kahless(kc);
+
+    const tables = [database.Module(), database.Maintainer(), database.Dependency()];
+    tables.forEach(def(table) => {
+        print("migrating table: {}".format(table._name));
+
+        const err = db.migrate(table);
+        if (not Success(err)) {
+            print("error: {}".format(err));
+            System.exit(1);
+        }
+    });
+
+    const wanbli = Wanbli("0.0.0.0", config.get("http").get("port"));
+    const controllers = [api.Index(db, logger)];
+    controllers.forEach(def(c) => {
+        const ret = wanbli.addController(c);
+        if (not ret.success()) {
+            logger.error(ret.unwrapError());
+            System.exit(1);
+        }
+    });
+
+    const mod = database.Module();
+    mod.name = "kahless";
+    mod.version = "v0.1.0";
+    mod.url = "https://github.com/briandowns/kahless";
+    mod.method = "git";
+
+    db.create(mod);
+
+    if (wanbli.start()) {
+        print(error.unwrapError());
+        System.exit(1);
+    }
+
+    System.exit(0);
+}

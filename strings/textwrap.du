@@ -1,0 +1,16 @@
+/**
+ * wrap
+ */
+def wrap(text, limit) {
+    if (text.len() > limit) {
+        const edge = text[0:limit].findLast(" ");
+        
+        if (edge > 0) {
+            const line = text[0:edge];
+            const remainder = text[edge+1:];
+            return line + "\n" + wrap(remainder, limit);
+        }
+    }
+
+    return text;
+}

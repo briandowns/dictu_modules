@@ -1,0 +1,31 @@
+class Node {
+    private keys;
+    private children;
+    private isLeaf;
+
+    init() {
+        this.keys = [];
+        this.children = [];
+        this.isLeaf = false;
+    }
+
+        split() {
+
+    }
+
+    addKey() {}
+    addChild() {}
+    
+
+    private isFull() {}
+    private getSize() {}
+}
+
+class Btree {
+    init() {
+
+    }
+
+
+    
+}

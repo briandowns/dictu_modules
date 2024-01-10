@@ -1,0 +1,65 @@
+import System;
+
+
+/**
+ * Semver
+ */
+class Semver {
+    var major = "";
+    var minor = "";
+    var patch = "";
+
+    init(var version, var strict=true) {}
+
+    /**
+     * parse
+     */
+    parse() {
+        const intermediate = this.version.split(".");
+        if (intermediate.len() < 3) {
+            return Error("invalid number of fields");
+        }
+
+        if (this.strict) {
+            const mjv = intermediate[0].toNumber();
+            if (not mjv.success()) {
+                return Error("invalid characters in major field");
+            }
+            this.major = mjv.unwrap();
+
+            const miv = intermediate[1].toNumber();
+            if (not miv.success()) {
+                return Error("invalid characters in minor field");
+            }
+            this.minor = miv.unwrap();
+            
+            const ptv = intermediate[2].toNumber();
+            if (not ptv.success()) {
+                return Error("invalid characters in patch field");
+            }
+            this.patch = ptv.unwrap();
+        } else {}
+
+        return Success(nil);
+    }
+
+    /**
+     * toString
+     */
+    toString() {
+        return [this.major, this.minor, this.patch].join(".");
+    }
+}
+
+{ // main
+    const sv = Semver("1.0.1");
+    const res = sv.parse().matchError(
+        def(error) => {
+            print(error);
+            System.exit(1);
+    });
+
+    print("Major: {}".format(sv.major));
+    print("Minor: {}".format(sv.minor));
+    print("Patch: {}".format(sv.patch));
+}

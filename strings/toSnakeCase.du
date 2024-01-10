@@ -1,0 +1,25 @@
+// // ToSnakeCase converts a string to snake_case.
+// func ToSnakeCase(in string) string {
+// 	runes := []rune(in)
+// 	out := make([]rune, 0, 1+len(runes))
+// 	for i := 0; i < len(runes); i++ {
+// 		if i > 0 && unicode.IsUpper(runes[i]) && ((i+1 < len(runes) && unicode.IsLower(runes[i+1])) || unicode.IsLower(runes[i-1])) {
+// 			out = append(out, '_')
+// 		}
+// 		out = append(out, unicode.ToLower(runes[i]))
+// 	}
+// 	return string(out)
+// }
+
+def toSnakeCase(s) {
+    var out = "";
+    
+    for (var i = 0; i < s.len(); i += 1) {
+        if (i > 0 and s[i].isUpper() and ((i+1 < s.len() and s[i+1].isLower()) or s[i-1].isLower())) {
+            out += "_";
+        }
+        out += s[i].lower();
+    }
+
+    return out;
+}

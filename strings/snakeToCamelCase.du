@@ -1,0 +1,33 @@
+/**
+ * snakeToCamelCase converts the given string in snake case 
+ * format to camel case format.
+ **/
+def snakeToCamelCase(s) {
+    var out = "";
+    var chars = s.split("");
+    var up = true;
+
+    for (var i = 0; i < chars.len(); i += 1) {
+        if (i == 0) {
+            out += chars[0];
+            up = false;
+            continue;
+        }
+
+        if (chars[i] == '_') {
+            up = true;
+        } else {
+            if (up) {
+                chars[i] = chars[i].upper();
+                up = false;
+            }
+            out += chars[i];
+        }
+    }
+
+    return out;
+}
+
+{ 
+    print(snakeToCamelCase("not_in_the_crease"));
+}

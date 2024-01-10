@@ -14,7 +14,10 @@ class B < A {
     var fieldA = 1;
     var fieldB = 2;
 
-    init() {}
+    init(x, y) {
+        this.x = x;
+        this.y = y;
+    }
 
     methodA() {}
     methodB() {}
@@ -24,8 +27,8 @@ class B < A {
 }
 
 {
-    const b = B();
+    const b = B(10000, 100000);
     //print(b._class.toDict()["public_methods"]);
-    print(JSON.stringify(b._class.toDict()).unwrap());
-    print(B.toDict());
+    print(JSON.stringify(b._class.toDict()["public_variables"]).unwrap());
+    //print(B.toDict());
 }

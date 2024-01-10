@@ -1,9 +1,5 @@
-import System;
-
-
 const escape = "\x1b";
 
-// Style
 enum Styles {
     Reset     = 0,
     Bold      = 1,
@@ -17,7 +13,6 @@ enum Styles {
     Strikeout = 9
 }
 
-// TextColors
 enum TextColors {
     Black   = 30,
     Red     = 31,
@@ -30,7 +25,6 @@ enum TextColors {
     Grey    = 90
 }
 
-// BackgroundColors
 enum BackgroundColors {
     Black   = 40,
     Red     = 41,
@@ -55,13 +49,55 @@ enum HighIntensityTextColors {
 
 enum HighIntensityBackgroundColors {
     Black   = 100,
-	Red     = 101,
-	Green   = 102,
-	Yellow  = 103,
-	Blue    = 104,
-	Magenta = 105,
-	Cyan    = 106,
-	White   = 107
+    Red     = 101,
+    Green   = 102,
+    Yellow  = 103,
+    Blue    = 104,
+    Magenta = 105,
+    Cyan    = 106,
+    White   = 107
+}
+
+const
+    black = "{}[1;{}m".format(escape, TextColors.Black),
+    red = "{}[1;{}m".format(escape, TextColors.Red),
+    green = "{}[1;{}m".format(escape, TextColors.Green),
+    yellow = "{}[1;{}m".format(escape, TextColors.Yellow),
+    blue = "{}[1;{}m".format(escape, TextColors.Blue),
+    magenta = "{}[1;{}m".format(escape, TextColors.Magenta),
+    cyan = "{}[1;{}m".format(escape, TextColors.Cyan),
+    white = "{}[1;{}m".format(escape, TextColors.White);
+
+def printBlack(s) {
+    print(black + s);
+}
+
+def printRed(s) {
+    print(red + s);
+}
+
+def printGreen(s) {
+    print(green + s);
+}
+
+def printYellow(s) {
+    print(yellow + s);
+}
+
+def printBlue(s) {
+    print(blue + s);
+}
+
+def printMagenta(s) {
+    print(magenta + s);
+}
+
+def printCyan(s) {
+    print(cyan + s);
+}
+
+def printWhite(s) {
+    print(white + s);
 }
 
 def colorize(str, ...style) {
@@ -76,56 +112,9 @@ def colorize(str, ...style) {
             }
         }
         s += "m";
+    } else {
+        return str;
     }
 
     return '{}{}\x1b[0m'.format(s, str);
-}
-
-def printRed(s) {
-    print("{}[1;{}m{}".format(escape, TextColors.Red, s));
-}
-
-def printRedWithStyle1(s, style) {
-    if (style < 0 or style > 9) {
-        print("{}[1;{};{}m{}".format(escape, TextColors.Red, style, s));   
-    }
-
-    print("{}[1;{}m{}".format(escape, TextColors.Red, s));
-}
-
-// "\e[1;31;42m Yes it is awful \e[0m"
-// def printWithStyle2(s, ...style) {
-//     if (style.len() > 0) {
-//         print("{}[1;{};{};{}m{}".format(escape, style[0], style[1], style[2], s));
-//         return;
-//     }
-
-//     print("{}[1;{}m{}".format(escape, TextColors.Red, s));
-// }
-
-def printWithStyle2(s, ...colorFormat) {
-    var formatted = "{}[1;";
-    if (colorFormat.len() > 0) {
-        formatted += "{};".repeat(colorFormat.len());
-        formatted += "m{}";
-        print(formatted.format(escape, s, ...colorFormat));
-        return;
-    }
-
-    // print("{}[1;{}m{}".format(escape, TextColors.Red, s));
-}
-
-def colorPrint(output, color, background=BackgroundColors.Black, style=Styles.Reset) {
-    // "\x1b[1;31;40;0mHello!!!!!"
-    print("{}[1;{};{};{}m{}".format(escape, color, background, style, output));
-}
-
-{ // main
-    // printRed("Hello, world!");
-    // printWithStyle2("Hello, world!", TextColors.Red, BackgroundColors.White, Styles.Italic);
-    // print("Hello, world!");
-    // print("Hello, world!");
-    colorPrint("Hello, world!", TextColors.Blue);
-
-    System.exit(0);
 }
