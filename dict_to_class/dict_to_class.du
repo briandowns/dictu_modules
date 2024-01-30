@@ -1,0 +1,19 @@
+import System;
+
+
+class Obj {}
+
+{ // main
+    var obj = Obj();
+    {
+        "name": "Brian",
+        "age": 18
+    }.forEach(def(k, v) => {
+        obj.setAttribute(k, v);
+    });
+    
+    print(obj.name);
+    print(obj.age);
+
+    System.exit(0);
+}
