@@ -2,7 +2,7 @@ import Random;
 
 
 /**
- * rety
+ * retry
  */
 def rety(f, retries) {
     var tried = 0;
