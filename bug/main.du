@@ -1,0 +1,121 @@
+import Random;
+import Queue;
+
+
+class Node {
+    init(var name, var edges) {}
+}
+
+class Edge {
+    init(var first, var second, var origFirst, var origSecond) {}
+}
+
+with("input.txt", "r") {
+    var line;
+    var lines = [];
+    var origNodes = {};
+    // When you reach the end of the file, nil is returned
+    while((line = file.readLine()) != nil) {
+        lines.push(line);
+        var parts = line.split(" ");
+        parts[0] = parts[0][0:parts[0].find(":")];
+
+        parts.forEach(def (entry) => {
+            if(not origNodes.exists(entry)) {
+                var n = Node(entry, {});
+                origNodes[entry] = n;
+            }
+        });
+    }
+    
+  var pp = [];
+  lines.forEach(def (l) => {
+      var parts = l.split(" ");
+      parts[0] = parts[0][0:parts[0].find(":")];
+      const f = parts[0];
+      if(parts.len() > 1) {
+          var sub = parts[1:];
+          sub.forEach(def (p) => {
+              origNodes[f].edges[p] = 1;
+              origNodes[p].edges[f] = 1;
+              var e = Edge(f, p, f, p);
+              pp.push(e);
+          });
+
+      }
+  });
+  var found = [];
+  while {
+    var pairs = pp.deepCopy();
+    var nodes = origNodes.deepCopy();
+    while(pairs.len() > 3) {
+      const index = Random.range(0, pairs.len()-1);
+      var rr = pairs.pop(index);
+      nodes[rr.first].edges.remove(rr.second);
+      nodes[rr.second].edges.remove(rr.first);
+
+      var indexes = [];
+      for(var i = 0; i < pairs.len(); i += 1) {
+        const p = pairs[i];
+        if((p.first == rr.first or p.second == rr.first) and (p.first == rr.second or p.second == rr.second)) {
+          indexes.push(p);
+        }
+      }
+      indexes.reverse();
+      indexes.forEach(def (i) => pairs.remove(i));
+
+      var edgesToMerge = nodes[rr.second].edges;
+      edgesToMerge.forEach(def (k, v) => {
+        print("start forEach call");
+        print("1: removing {} from {} in {}".format(rr.second, nodes[k].edges, k));
+        nodes[k].edges.remove(rr.second);
+        var n1 = nodes[k].edges;
+        print("1: adding {} into {} in {}".format(rr.first, n1, k));
+        n1[rr.first] = 1;
+        var n2 = nodes[rr.first].edges;
+        print("2: adding {} into {} in {}".format(k, n2, rr.first));
+        n2[k] = 1;
+        print("end forEach call");
+      });
+
+      for(var i = 0; i < pairs.len(); i += 1) {
+         var p = pairs[i];
+         if(p.first == rr.second) {
+              p.first = rr.first;
+              pairs[i] = p;
+          } else if (p.second == rr.second) {
+              p.second = rr.first;
+              pairs[i] = p;
+
+          }
+      }
+    }
+    if(not (pairs.len() == 3))
+      continue;
+    pairs.forEach(def(v) => found.push([v.origFirst, v.origSecond]));
+    break;
+  }
+  print(found);
+  const q = Queue.new();
+  var nodes = origNodes.deepCopy();
+  found.forEach(def (v) => {
+    nodes[v[0]].edges.remove(v[1]);
+    nodes[v[1]].edges.remove(v[0]);
+  });
+  var left = set();
+  const k = nodes.keys()[0];
+  q.push(k);
+  while(q.len()) {
+    const elem = q.pop();
+    if(elem == 0)
+      continue;
+    if(left.contains(elem))
+      continue;
+    left.add(elem);
+    nodes[elem].edges.forEach(def (k, v) => {
+  q.push(k);
+  });
+  }
+  const answer = left.len() * (nodes.len()- left.len());
+  print(answer);
+}

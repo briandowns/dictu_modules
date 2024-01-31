@@ -1,0 +1,57 @@
+import Path;
+import Random;
+import System;
+
+def diffList(l1, l2) {
+    return l2.filter(def(i) => {
+        if (not l1.contains(i)) {
+            return i;
+        }
+    });
+}
+
+class Watch {
+    init(var path, refresh=1, delay=10) {
+        this.refresh = refresh;
+        this.delay = delay;
+    }
+
+    start() {
+        this.foundThen = Path.listDir(this.path);
+
+        while (true) {
+            const foundNow = Path.listDir(this.path);
+            const diff = diffList(this.foundThen, foundNow);
+            if (diff.len() > 0) {
+                print(diff);
+            }
+            System.sleep(this.delay);
+        }
+    }
+}
+
+{ // main
+    while (true) {
+        const val = Random.range(1, 1000000);
+        var mn = "";
+        if (val % 2 == 0) {
+            System.sleep(2);
+            mn = "even.du";
+            import mn;
+        } else {
+            System.sleep(2);
+            mn = "odd.du";
+            import mn;
+        }
+    }
+
+    // const w = Watch("./faas");
+    // w.start();
+
+    // while (true) {
+    //     import "odd.du";
+    //     System.sleep(5);
+    // }
+
+    System.exit(0);
+}
