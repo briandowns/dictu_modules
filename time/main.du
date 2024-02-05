@@ -1,20 +1,47 @@
-import BigInt;
+import Datetime;
 import System;
+
+
+class Duration {
+    private val;
+
+    init(val=0) {
+        this.val = val;
+    }
+
+    parse(s) {
+        return Duration(1);
+    }
+}
 
 
 class Time {
     private val;
 
-    init() {}
+    init() {
+        this.val = System.time();
+    }
 
     now() {
-        
+        return System.time();
+    }
+
+    add(d) {
+
+    }
+
+    sub(d) {
+
     }
 }
 
 { // main
     const time = Time();
     print(time.now());
+
+    const d = Duration(9);
+    const d2 = d.parse("1s");
+    print(d2);
 
     System.exit(0);
 }
