@@ -4,12 +4,12 @@ import System;
 
 from "csv.du" import Opts, Parser;
 
+
 // main
 {
     const opts = Opts("data.csv", true);
     const parser = Parser(opts);
-    parser.parse().unwrap()
-        .forEach(def(row) => print(row));
+    parser.parse().unwrap().forEach(def(row) => print(row));
     print("Column Count: {}".format(parser.getColumnCount()));
 
     System.exit(0);

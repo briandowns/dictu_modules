@@ -3,7 +3,7 @@ import System;
 import "ccGen.du" as cc;
 
 {
-    const card = cc.Card("4189510072717294", "373", "10", "23", "");
+    const card = cc.Card("4189510072717294", "174", "10", "26", "");
     print(card.method());
 
     System.exit(0);

@@ -1,9 +1,11 @@
 // Module csv provides functions to read and write data in CSV format.
 
-// Opts requires 1 argument, the path of the file to be parsed. 2 other
-// optional arguments are available. firstLineHeader (default: true) indicates
-// whether or not the first line of the file is a header, and delimiter 
-// (default: ",") which indicates the record delimiter.
+/**
+ * Opts requires 1 argument, the path of the file to be parsed. 2 other
+ * optional arguments are available. firstLineHeader (default: true) indicates
+ * whether or not the first line of the file is a header, and delimiter 
+ * (default: ",") which indicates the record delimiter.
+ */
 class Opts {
     init(var path,
         var firstLineHeader=false,
@@ -12,8 +14,10 @@ class Opts {
         var startLine = 0) {}
 }
 
-// Parser opens the file in the given path, parses each line and record, and
-// saves them to a list and returns it.
+/**
+ * Parser opens the file in the given path, parses each line and record, and
+ * saves them to a list and returns it.
+ */
 class Parser {
     private columnCount;
 
@@ -21,6 +25,9 @@ class Parser {
         this.opts = opts;
     }
 
+    /**
+     * parse parses the given CSV file.
+     */
     parse() {
         if (this.opts.delimiter == this.opts.commentCharacter) {
             return Error("delimiter and comment character aren't alowed to be the same");
@@ -57,7 +64,9 @@ class Parser {
         return Success(data);
     }
 
-    // write
+    /**
+     * write
+     */
     write(data) {
         if (data == "") {
             return Error("given data empty");
@@ -70,7 +79,9 @@ class Parser {
         return Success(nil);
     }
 
-    // writeAll
+    /** 
+     * writeAll
+     */
     writeAll(data) {
         if (data.len() == 0) {
             return Error("given data empty");
@@ -83,6 +94,9 @@ class Parser {
         return Success(nil);
     }
 
+    /**
+     * getColumnCount returns the collected column count.
+     */
     getColumnCount() {
         return this.columnCount;
     }

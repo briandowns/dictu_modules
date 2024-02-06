@@ -20,7 +20,7 @@ class Digits {
 
 // Card holds generic information about the credit card
 class Card {
-    init(var number, var cvv, var m, var y, var company) {}
+    init(var number, var cvv, var m, var y, var company="") {}
 
     // lastFour returns the last four digits of the credit card's number
     lastFour() {
