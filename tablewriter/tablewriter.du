@@ -8,12 +8,16 @@ const
 	newline = "\n";
 
 class Table {
+    const columnPadding = 4;
     var columnCount = 0;
+
 
     init(var headers=[]) {
         this.maxColumnWidth = 0;
         this.columnCount = headers.len();
         this.columnsAndLength = 0;
+
+        this.justification = "left";
     }
 
     writeHeader() {
@@ -29,11 +33,45 @@ class Table {
     }
 
     write(data) {
+        
+
         data.forEach(def(row) => {
-            print("{} {} {}".format(row[0], row[1], row[2]));
-            // row.forEach(def(entry) => {
-            //     print("{}\b".format(entry));
-            // });
+            var output = "";
+            const padding = " ".repeat(this.columnPadding);
+
+            switch (this.justification) {
+                case "left": {
+                    row.forEach(def(r) => {
+                        switch (type(r)) {
+                            case "string": output += r + padding;
+                            case "number": output += r.toString() + padding;
+                        }
+                    });
+                }
+                case "right": {
+                    row.forEach(def(r) => {
+                        switch (type(r)) {
+                            case "string": output += padding + r;
+                            case "number": output += padding + r.toString();
+                        }
+                    });
+                }
+                case "center": {
+                    const sidePadLen = this.columnPadding / 2;
+                    const leftPad = " ".repeat(sidePadLen);
+                    const rightPad = leftPad;
+
+                    row.forEach(def(r) => {
+                        switch (type(r)) {
+                            case "string": output += leftPad + r + rightPad;
+                            case "number": output += leftPad + r.toString() + rightPad;
+                        }
+                    });
+                }
+                
+            }
+
+            print(output);
         });
 
         if (data.len() == 0) {
@@ -47,7 +85,10 @@ class Table {
 
 { // main
     const columns = ["first", "last", "age"];
-    const data = [["John", "Smith", 30]];
+    const data = [
+        ["John", "Smith", 30],
+        ["Brian", "Jones", 44]
+    ];
 
     const table = Table(columns);
     table.write(data);
